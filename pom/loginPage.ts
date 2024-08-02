@@ -1,27 +1,53 @@
-import { Page } from '@playwright/test';  
+import { Locator, Page } from '@playwright/test';
 import { LoginPageLocator } from '../locators/loginPageLocators';
-export class LoginLocators {  
-    private page: Page; 
+export class LoginLocators {
+    private page: Page;
 
-    constructor(page: Page) {  
-        this.page = page;  
-    }  
+    constructor(page: Page) {
+        this.page = page;
+    }
 
-    get inputUsername() {  
-        return this.page.locator(LoginPageLocator.inputUsername);  
-    }  
+    async login(username?: string, password?: string, _login: boolean = true) {
+        if (username) {
+            await this.inputUsername.fill(username)
+        }
+        if (password) {
+            await this.inputPassword.fill(password)
+        }
 
-    get inputPassword() {  
-        return this.page.locator(LoginPageLocator.inputPassword);  
-    }  
+        if (_login) {
+            await this.submitButton.click()
+        }
 
-    get submitButton() {  
-        return this.page.locator(LoginPageLocator.submitButton);  
-    }  
+    }
 
-    get dashboardLink() {  
-        return this.page.getByRole('link', { name: 'Dashboard' });  
-    }  
+    async pressKeyOnLocator(locator: Locator | string, key:string, options?:{
+        delay?: number;
+        noWaitAfter?: boolean;
+        timeout?: number;
+    }){
+        if (locator instanceof String){
+            await this.page.locator(locator as string).press(key, options)
+        }else{
+            await (locator as Locator).press(key, options)
+        }
+    }
+
+    get inputUsername() {
+        return this.page.locator(LoginPageLocator.inputUsername);
+    }
+
+    get inputPassword() {
+        return this.page.locator(LoginPageLocator.inputPassword);
+    }
+
+    get submitButton() {
+        return this.page.locator(LoginPageLocator.submitButton);
+    }
+
+    get dashboardLink() {
+        return this.page.getByRole('link', { name: 'Dashboard' });
+    }
 
     get errorUsername() {
         return this.page.locator('//input[@name="username"]/parent::div/following-sibling::span');
