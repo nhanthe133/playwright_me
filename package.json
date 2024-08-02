@@ -3,7 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+   "test": "playwright test",   
+   "test:ui": "playwright test --ui",
+
+   "orange-hrm": "playwright test orange-hrm.spec.ts",
+   "orange-hrm:allBrowser": "playwright test orange-hrm.spec.ts --headed",
+   "orange-hrm:chromium": "playwright test orange-hrm.spec.ts --project=chromium --headed",
+   "orange-hrm:firefox": "playwright test orange-hrm.spec.ts --project=firefox --headed",
+   "orange-hrm:webkit": "playwright test orange-hrm.spec.ts --project=webkit --headed"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
