@@ -1,6 +1,7 @@
 import { Locator, Page } from '@playwright/test';
-import loginPageLocator from '../locators/loginPageLocator.json'
-export class LoginLocators {
+import loginPageLocator from '../locators/loginPageLocator.json';
+import { pressKeyOnLocator } from '../utils/pressKeyOnLocator';
+export class LoginPage {
     private page: Page;
 
     constructor(page: Page) {
@@ -14,22 +15,17 @@ export class LoginLocators {
         if (password) {
             await this.inputPassword.fill(password)
         }
-
         if (_login) {
             await this.submitButton.click()
         }
     }
 
-    async pressKeyOnLocator(locator: Locator | string, key:string, options?:{
+    async pressKeyOnLocator(locator: Locator | string, key: string, options?: {
         delay?: number;
         noWaitAfter?: boolean;
         timeout?: number;
-    }){
-        if (locator instanceof String){
-            await this.page.locator(locator as string).press(key, options)
-        }else{
-            await (locator as Locator).press(key, options)
-        }
+    }) {
+        await pressKeyOnLocator(this.page, locator, key, options);
     }
 
     get inputUsername() {
