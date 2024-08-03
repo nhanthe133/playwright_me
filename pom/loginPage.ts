@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { LoginPageLocator } from '../locators/loginPageLocators';
+import loginPageLocator from '../locators/loginPageLocator.json'
 export class LoginLocators {
     private page: Page;
 
@@ -18,7 +18,6 @@ export class LoginLocators {
         if (_login) {
             await this.submitButton.click()
         }
-
     }
 
     async pressKeyOnLocator(locator: Locator | string, key:string, options?:{
@@ -34,15 +33,15 @@ export class LoginLocators {
     }
 
     get inputUsername() {
-        return this.page.locator(LoginPageLocator.inputUsername);
+        return this.page.locator(loginPageLocator.inputUsername);
     }
 
     get inputPassword() {
-        return this.page.locator(LoginPageLocator.inputPassword);
+        return this.page.locator(loginPageLocator.inputPassword);
     }
 
     get submitButton() {
-        return this.page.locator(LoginPageLocator.submitButton);
+        return this.page.locator(loginPageLocator.submitButton);
     }
 
     get dashboardLink() {
@@ -50,15 +49,15 @@ export class LoginLocators {
     }
 
     get errorUsername() {
-        return this.page.locator('//input[@name="username"]/parent::div/following-sibling::span');
+        return this.page.locator(loginPageLocator.errorUsername);
     }
 
     get errorPassword() {
-        return this.page.locator('//input[@name="password"]/parent::div/following-sibling::span');
+        return this.page.locator(loginPageLocator.errorPassword);
     }
 
     get alertLocator() {
-        return this.page.locator('//p[contains(@class,"oxd-alert-content-text")]');
+        return this.page.locator(loginPageLocator.alertLocator);
     }
 
 }

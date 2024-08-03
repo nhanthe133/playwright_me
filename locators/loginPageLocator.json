@@ -1,0 +1,8 @@
+{
+    "inputUsername":"input[name=username]",
+    "inputPassword":"input[name=password]",
+    "submitButton":"button[type=submit]",
+    "errorUsername": "//input[@name='username']/parent::div/following-sibling::span",
+    "errorPassword": "//input[@name='password']/parent::div/following-sibling::span",
+    "alertLocator": "//p[contains(@class,'oxd-alert-content-text')]"
+}
