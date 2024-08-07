@@ -1,0 +1,22 @@
+{
+    "recruitmentLink":"https://opensource-demo.orangehrmlive.com/web/index.php/recruitment/viewCandidates",
+    "recruitmentHeader":"//div/child::div/child::span/child::h6",
+    "addButton":"//div/child::div/child::button[@class='oxd-button oxd-button--medium oxd-button--secondary']",
+    "inputFirstName":"input[name=firstName]",
+    "inputMiddleName":"input[name=middleName]",
+    "inputLastName":"input[name=lastName]",
+    "inputEmail":"//label[text()='Email']/parent::div/following-sibling::div/input",
+    "submitAdd":"button[type=submit]",
+    "appStage":"//form/child::h6",
+    "contactNumber": "//label[text()='Contact Number']/parent::div/following-sibling::div/input",
+    "keyWords":"//label[text()='Keywords']/parent::div/following-sibling::div/input",
+    "dateOfApp":"//div[@class='oxd-date-input']/child::input",
+    "notes":"//label/parent::div/following-sibling::div/textarea",
+    "vacancy":"//div/child::div[@class='oxd-select-text-input']",
+    "vacancyName":"//div/child::span[text()='Payroll Administrator']",
+    "browseFile":"//div[@class='oxd-file-button']/following-sibling::div",
+    "success":"//div/child::p/following-sibling::p",
+    "errorFirstName":"//input[@name='firstName']/parent::div/following-sibling::span",
+    "errorLastName":"//input[@name='lastName']/parent::div/following-sibling::span",
+    "errorEmail": "//label[text()='Email']/parent::div/following-sibling::div/input/parent::div/following-sibling::span"
+}
