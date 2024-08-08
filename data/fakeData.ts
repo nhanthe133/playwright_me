@@ -1,4 +1,4 @@
-import { fa, faker } from '@faker-js/faker';  
+import { faker } from '@faker-js/faker';  
 import { format } from 'path';
 
 // Define the interfaces for the data types  
@@ -9,18 +9,18 @@ export interface User {
   email: string; 
   contactNumber: string;
   keywords: string;
-  dateOfApp: Date;
+  dateOfApp: string;
   fromDate: Date;
   toDate: Date;
   notes: string; 
 }  
 
+export interface Email {
+  email: string
+}
 
-function formatDateToYYYYMMDD(date) {  
-  const year = date.getFullYear();  
-  const month = String(date.getMonth() + 1).padStart(2, '0'); 
-  const day = String(date.getDate()).padStart(2, '0');  
-  return `${year}-${month}-${day}`;  
+export interface InvalidDate {
+  dateOfApp: Date;
 }
 
 export function createValidUser(): User {  
@@ -32,7 +32,7 @@ export function createValidUser(): User {
     email: faker.internet.email(),
     contactNumber: faker.phone.number(format),
     keywords: faker.lorem.words(2),
-    dateOfApp: faker.date.past(),
+    dateOfApp: faker.date.past().toISOString(),
     fromDate: faker.date.between({
       from: '2024-08-04T00:00:00.000Z',
        to: '2025-08-07T00:00:00.000Z'
@@ -44,6 +44,22 @@ export function createValidUser(): User {
     notes: faker.lorem.paragraph()
   };  
 }  
+
+export function createInvalidEMail(): Email {  
+  return {  
+    email: faker.random.word() + '@!@#$.com',
+  };  
+}  
+
+export function createInvalidDate(): InvalidDate {  
+  return {  
+    dateOfApp: faker.date.past(),
+  };  
+}  
+
+const ValidUser = createValidUser();
+
+export default ValidUser;
  
 
 

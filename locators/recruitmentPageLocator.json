@@ -1,5 +1,4 @@
 {
-    "recruitmentLink":"https://opensource-demo.orangehrmlive.com/web/index.php/recruitment/viewCandidates",
     "recruitmentHeader":"//div/child::div/child::span/child::h6",
     "addButton":"//div/child::div/child::button[@class='oxd-button oxd-button--medium oxd-button--secondary']",
     "inputFirstName":"input[name=firstName]",
@@ -18,5 +17,10 @@
     "success":"//div/child::p/following-sibling::p",
     "errorFirstName":"//input[@name='firstName']/parent::div/following-sibling::span",
     "errorLastName":"//input[@name='lastName']/parent::div/following-sibling::span",
-    "errorEmail": "//label[text()='Email']/parent::div/following-sibling::div/input/parent::div/following-sibling::span"
+    "errorEmail": "//label[text()='Email']/parent::div/following-sibling::div/input/parent::div/following-sibling::span",
+    "errorFile" : "//input[@type='file']/parent::div/following-sibling::span[contains(@class, 'oxd-input-field-error-message')]",
+    "errorDate" : "//div[@class='oxd-date-input']/parent::div/parent::div/following-sibling::span",
+    "cancelButton":"//div[@class='oxd-form-actions']/button[@type='button']",
+    "trashBin": "//i[@class='oxd-icon bi-trash']"
+
 }
