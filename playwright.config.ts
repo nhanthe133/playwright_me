@@ -13,7 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -40,7 +40,7 @@ export default defineConfig({
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'], 
-        viewport: { width: 1920, height: 1080}
+        viewport: { width: 1366, height: 768}
       
       },
     },
@@ -49,7 +49,7 @@ export default defineConfig({
       name: 'firefox',
       use: { 
         ...devices['Desktop Firefox'],
-        viewport: { width: 1920, height: 1080}
+        viewport: { width: 1366, height: 768}
       },
     },
 
@@ -57,7 +57,7 @@ export default defineConfig({
       name: 'webkit',
       use: { 
         ...devices['Desktop Safari'],
-        viewport: { width: 1920, height: 1080}
+        viewport: { width: 1366, height: 768}
       },
     },
 

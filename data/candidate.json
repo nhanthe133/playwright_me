@@ -1,0 +1,40 @@
+{
+    "firstName" : "Automation",
+    "middleName" : "Test",
+    "lastName" : "Fakename",
+    "email" : "automation@example.com",
+    "contactNumber" : "0123456789",
+    "keywords" : "auto test",
+    "fromDate" : "2024-08-05",
+    "toDate":"2024-08-06",
+    "notes" : "automation test",
+
+    "vacancy" : "Payroll Administrator",
+    "fileName" : "correct.docx",
+    "overSize":"oversize.mp4",
+    "invalidType":"invalidtype.jpg",
+    "Status":"Application Initiated",
+    "jobTitle":"Payroll Administrator",
+    "candidateName":"Automation Test Fakename",
+    "methodOfApplication":"Manual",
+
+    "dFirstName" : "test",
+    "dLastName" : "delete",
+    "invalidMail":"test.auto",
+    "fakeDate":"12-34-5678",
+    
+    "recordName": "Automation Fakename",
+
+    "eFirstName":"E-Automation",
+    "eMiddleName":"E-Test",
+    "eLastName":"E-Fakename",
+    "eEmail":"eautomation@example.com",
+    "eContactNumber":"01234567890",
+    "eKeywords":"E-auto test",
+    "eDateOfApplication":"2024-08-05",
+    "eNotes":"E-automation test",
+
+    "eVacancy" : "test",
+    "eFileName":"ecorrect.docx",
+    "historyCount":"4"
+}
