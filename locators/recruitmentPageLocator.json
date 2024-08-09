@@ -11,7 +11,7 @@
     "keyWords":"//label[text()='Keywords']/parent::div/following-sibling::div/input",
     "dateOfApp":"//div[@class='oxd-date-input']/child::input",
     "notes":"//label/parent::div/following-sibling::div/textarea",
-    "vacancy":"//div/child::div[@class='oxd-select-text-input']",
+   
     "vacancyName":"//div/child::span[text()='Payroll Administrator']",
     "browseFile":"//div[@class='oxd-file-button']/following-sibling::div",
     "success":"//div/child::p/following-sibling::p",
@@ -21,6 +21,16 @@
     "errorFile" : "//input[@type='file']/parent::div/following-sibling::span[contains(@class, 'oxd-input-field-error-message')]",
     "errorDate" : "//div[@class='oxd-date-input']/parent::div/parent::div/following-sibling::span",
     "cancelButton":"//div[@class='oxd-form-actions']/button[@type='button']",
-    "trashBin": "//i[@class='oxd-icon bi-trash']"
+    "trashBin": "//i[@class='oxd-icon bi-trash']",
+    "jobTitle": "//label[text()='Job Title']/parent::div/following-sibling::div/div/div",
+    "vacancy":"//label[text()='Vacancy']/parent::div/following-sibling::div/div/div",
+    "jobTitleName":"//div/child::span[text()='Payroll Administrator']",
+    "submitButton" : "button[type=submit]",
+
+    "status": "//label[text()='Status']/parent::div/following-sibling::div/div/div",
+    "statusName":"//div/child::span[text()='Application Initiated']",
+
+    "candidate": "//label[text()='Candidate Name']/parent::div/following-sibling::div/div/input"
+
 
 }

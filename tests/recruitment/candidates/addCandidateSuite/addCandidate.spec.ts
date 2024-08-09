@@ -2,11 +2,15 @@ import { test, expect, type Page } from "@playwright/test";
 import { LoginPage } from "../../../../pom/loginPage";
 import { RecruitmentPage } from "../../../../pom/recruitmentPage";
 import account from "../../../../data/account.json";
+import { deleteRecord } from '../../../../utils/deleteRecord';
 import {
   createValidUser,
   createInvalidEMail,
   createInvalidDate,
 } from "../../../../data/fakeData";
+import { fullName } from "../../../../utils/fullName";
+import { halfName } from "../../../../utils/halfName";
+
 import ValidUser from "../../../../data/fakeData";
 import recruirmenPageLocator from "../../../../locators/recruitmentPageLocator.json";
 
@@ -70,24 +74,11 @@ test.describe("Add Candidate Suite", () => {
     await expect(recruitmentPage.appStage).toBeVisible();
 
     await recruitmentPage.recruitmentLink.click();
-    const firstName = ValidUser.firstName;
-    const middleName = ValidUser.middleName;  
-    const lastName = ValidUser.lastName;  
-    const fullName = `${firstName} ${middleName} ${lastName}`;  
-
-    const rowLocator = page.locator(`div.oxd-table-row:has-text("${fullName}")`);
-    const trashButton = rowLocator.locator("button:has(i.oxd-icon.bi-trash)");
-    await trashButton.waitFor({ state: "visible" });
-    await trashButton.click();
-    const deleteButton = page.locator("button:has(i.oxd-icon.bi-trash.oxd-button-icon)");
-    await deleteButton.click();
-    await expect(recruitmentPage.successMessage).toBeVisible();
+    const rowLocator = fullName(page, ValidUser);
+    await deleteRecord(rowLocator, page, recruitmentPage);
   });
 
-  test("Add Candidate success when inputing required fields only", async ({
-    page,
-  }) => {
-    const user = createValidUser();
+  test("Add Candidate success when inputing required fields only", async ({page}) => {
     await recruitmentPage.inputRequired(
       ValidUser.firstName,
       ValidUser.lastName,
@@ -98,21 +89,12 @@ test.describe("Add Candidate Suite", () => {
     await expect(recruitmentPage.appStage).toBeVisible();
 
     await recruitmentPage.recruitmentLink.click();
-    const firstName = ValidUser.firstName;
-    const lastName = ValidUser.lastName;  
-    const fullName = `${firstName} ${lastName}`;  
-
-    const rowLocator = page.locator(`div.oxd-table-row:has-text("${fullName}")`);
-    const trashButton = rowLocator.locator("button:has(i.oxd-icon.bi-trash)");
-    await trashButton.waitFor({ state: "visible" });
-    await trashButton.click();
-    const deleteButton = page.locator("button:has(i.oxd-icon.bi-trash.oxd-button-icon)");
-    await deleteButton.click();
-    await expect(recruitmentPage.successMessage).toBeVisible();
+    const rowLocator = halfName(page, ValidUser);
+    await deleteRecord(rowLocator, page, recruitmentPage);
   });
 
   test("Failed to add candidate when do not input required fields", async ({
-    page,
+    page
   }) => {
     await recruitmentPage.submitAdd.click();
     await expect(recruitmentPage.errorFirstName).toBeVisible();
@@ -120,18 +102,14 @@ test.describe("Add Candidate Suite", () => {
     await expect(recruitmentPage.errorEmail).toBeVisible();
   });
 
-  test("Validation alert should be show when input invalid email address", async ({
-    page,
-  }) => {
+  test("Validation alert should be show when input invalid email address", async ({page}) => {
     const email = createInvalidEMail();
     await recruitmentPage.inputInvalidEmail(email.email);
     await expect(recruitmentPage.errorEmail).toBeVisible();
     await expect(page.getByText("admin@example.com")).toBeVisible();
   });
 
-  test("File size validation alert should be shown when upload file with size larger than 1MB", async ({
-    page,
-  }) => {
+  test("File size validation alert should be shown when upload file with size larger than 1MB", async ({page}) => {
     const [fileChooser] = await Promise.all([
       page.waitForEvent("filechooser"),
       recruitmentPage.browseFile.click(),
@@ -143,9 +121,7 @@ test.describe("Add Candidate Suite", () => {
     await expect(page.getByText("Attachment Size Exceeded")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
   });
 
-  test("File type not allowed validation alert should be shown when uploading invalid file type", async ({
-    page,
-  }) => {
+  test("File type not allowed validation alert should be shown when uploading invalid file type", async ({page}) => {
     const [fileChooser] = await Promise.all([
       page.waitForEvent("filechooser"),
       recruitmentPage.browseFile.click(),
@@ -157,9 +133,7 @@ test.describe("Add Candidate Suite", () => {
     await expect(page.getByText("File type not allowed")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
   });
 
-  test("Date format validation message should be shown when input invalid date format", async ({
-    page,
-  }) => {
+  test("Date format validation message should be shown when input invalid date format", async ({page}) => {
     const invalidDate = createInvalidDate();
     const formattedDate = invalidDate.dateOfApp.toISOString();
     await recruitmentPage.dateOfApp.clear();
@@ -168,9 +142,7 @@ test.describe("Add Candidate Suite", () => {
     await expect(page.getByText("yyyy-dd-mm")).toBeVisible();
   });
 
-  test("Navigation to Recruitment page when clicking the cancel button", async ({
-    page,
-  }) => {
+  test("Navigation to Recruitment page when clicking the cancel button", async ({page}) => {
     await recruitmentPage.cancelButton.click();
     await expect(page.url()).toBe(
       "https://opensource-demo.orangehrmlive.com/web/index.php/recruitment/viewCandidates"

@@ -8,7 +8,6 @@ export class RecruitmentPage {
     this.page = page;
   }
 
-
   async inputFull(
     firstName: string,
     lastName?: string,
@@ -87,6 +86,18 @@ export class RecruitmentPage {
     }
   }
 
+  get candidate() {
+    return this.page.locator(recruitmentPageLocator.candidate);
+  }
+  get status() {
+    return this.page.locator(recruitmentPageLocator.status);
+  }
+  get statusName() {
+    return this.page.locator(recruitmentPageLocator.statusName);
+  }
+  get jobTitle() {
+    return this.page.locator(recruitmentPageLocator.jobTitle);
+  }
   get cancelButton() {
     return this.page.locator(recruitmentPageLocator.cancelButton);
   }
@@ -114,6 +125,9 @@ export class RecruitmentPage {
   get vacancyName() {
     return this.page.locator(recruitmentPageLocator.vacancyName);
   }
+  get jobTitleName() {
+    return this.page.locator(recruitmentPageLocator.jobTitleName);
+  }
   get notes() {
     return this.page.locator(recruitmentPageLocator.notes);
   }
@@ -136,9 +150,11 @@ export class RecruitmentPage {
   get recruitmentHeader() {
     return this.page.locator(recruitmentPageLocator.recruitmentHeader);
   }
-
   get addButton() {
     return this.page.locator(recruitmentPageLocator.addButton);
+  }
+  get submitButton() {
+    return this.page.locator(recruitmentPageLocator.submitButton);
   }
   get inputFirstName() {
     return this.page.locator(recruitmentPageLocator.inputFirstName);

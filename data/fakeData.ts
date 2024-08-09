@@ -32,7 +32,10 @@ export function createValidUser(): User {
     email: faker.internet.email(),
     contactNumber: faker.phone.number(format),
     keywords: faker.lorem.words(2),
-    dateOfApp: faker.date.past().toISOString(),
+    dateOfApp: faker.date.between({
+      from: '2024-08-04',
+      to: '2024-08-08'
+    }).toISOString(),
     fromDate: faker.date.between({
       from: '2024-08-04T00:00:00.000Z',
        to: '2025-08-07T00:00:00.000Z'

@@ -14,7 +14,9 @@
     "testfirefox:headed": "npx playwright --project=firefox --headed test",
     "testwebkit": "npx playwright test --project=webkit",
     "testwebkit:headed": "npx playwright test --project=webkit --headed",
-    "tempotary": "npx playwright test recruitment/candidates/addCandidateSuite/addCandidate --headed --project=chromium -g"
+
+    "addcandidate": "npx playwright test recruitment/candidates/addCandidateSuite/addCandidate --headed --project=chromium -g",
+    "searchcandidate": "npx playwright test recruitment/candidates/searchCandidateSuite/searchCandidate --headed --project=chromium -g"
   },
   "keywords": [],
   "author": "",
