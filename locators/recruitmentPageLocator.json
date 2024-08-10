@@ -30,7 +30,10 @@
     "status": "//label[text()='Status']/parent::div/following-sibling::div/div/div",
     "statusName":"//div/child::span[text()='Application Initiated']",
 
-    "candidate": "//label[text()='Candidate Name']/parent::div/following-sibling::div/div/input"
-
+    "vipCandidate":"//div[contains(@class, 'oxd-autocomplete-tex')]/input",
+    "candidateName":"",
+    "deleteButton": "button:has(i.oxd-icon.bi-trash.oxd-button-icon)",
+    "trashButton": "button:has(i.oxd-icon.bi-trash)"
+    
 
 }

@@ -3,9 +3,10 @@ import { LoginPage } from "../../../../pom/loginPage";
 import { RecruitmentPage } from "../../../../pom/recruitmentPage";
 import account from "../../../../data/account.json";
 import ValidUser from "../../../../data/fakeData";
-import { deleteRecord } from '../../../../utils/deleteRecord';
-import { addRecord } from "../../../../utils/addRecord";
-import { fullName } from "../../../../utils/fullName";
+import { deleteRecord } from '../../../../pom/recruitmentPom/deleteRecord';
+import { addRecord } from "../../../../pom/recruitmentPom/addRecord";
+import { fullName } from "../../../../pom/recruitmentPom/fullName";
+import { fullCandidateName} from "../../../../pom/recruitmentPom/fullCandidateName"
 var loginPage: LoginPage;
 var recruitmentPage: RecruitmentPage;
 
@@ -13,7 +14,7 @@ var recruitmentPage: RecruitmentPage;
 test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     recruitmentPage = new RecruitmentPage(page);
-    await page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+    await page.goto("./auth/login");
     // login
     await loginPage.login(
       account.adminAccount.username,
@@ -60,24 +61,30 @@ test.beforeEach(async ({ page }) => {
       }); 
 
       test("Filter candidates by Candidate Name", async ({page}) => {
-        await recruitmentPage.candidate.click();
-
+        await recruitmentPage.vipCandidate.click();
+        const rowLocator = fullName(page, ValidUser);
         const firstName = ValidUser.firstName;
-        const middleName = ValidUser.middleName ? `${ValidUser.middleName} ` : '';  
-        const lastName = ValidUser.lastName;  
-        const fullNamed = `${firstName} ${middleName}${lastName}`; 
-        
-        await recruitmentPage.candidate.click();
-        await recruitmentPage.candidate.fill(firstName)//fill first name
-        const candidateName = page.locator(`//div/child::span[text()='${fullNamed}']`);
+        const candidateName = fullCandidateName(page, ValidUser);
+        await recruitmentPage.vipCandidate.fill(firstName)//fill first name
         await candidateName.click();
         await recruitmentPage.submitButton.click();
         await page.waitForTimeout(5000);
         await recruitmentPage.recruitmentLink.click();
-        const rowLocator = fullName(page, ValidUser);
         await expect(rowLocator).toBeVisible();
         await deleteRecord(rowLocator, page, recruitmentPage);
       }); 
 
+      test("Filter candidates by Keywords", async ({page}) => {
+        const rowLocator = fullName(page, ValidUser);
+        await recruitmentPage.keywords.click();
+        const keyWords = ValidUser.keywords;
+        await recruitmentPage.keywords.fill(keyWords);
+        await recruitmentPage.submitButton.click();
+        await expect(rowLocator).toBeVisible();
+      }); 
 
+      test("Filter candidates by From field of Date of Application", async ({page}) => {
+        await recruitmentPage.dateOfApp.click();
+        await page.waitForTimeout(5000);
+      }); 
   });

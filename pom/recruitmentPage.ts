@@ -1,11 +1,23 @@
 import { Locator, Page } from "@playwright/test";
 import recruitmentPageLocator from "../locators/recruitmentPageLocator.json";
 
+
+export function getFullNameLocator(fullName: string) {
+  return `div.oxd-table-row:has-text("${fullName}")`;
+}
+
+export function getFullCandidateName(fullName: string) {
+  return `//div/child::span[text()='${fullName}']`;
+}
+
 export class RecruitmentPage {
   private page: Page;
 
   constructor(page: Page) {
     this.page = page;
+  }
+  row(fullName: any) {
+    return `div.oxd-table-row:has-text("${fullName}")`;
   }
 
   async inputFull(
@@ -86,8 +98,17 @@ export class RecruitmentPage {
     }
   }
 
-  get candidate() {
-    return this.page.locator(recruitmentPageLocator.candidate);
+  get trashButton() {
+    return this.page.locator(recruitmentPageLocator.trashButton);
+  }
+  get vipCandidate() {
+    return this.page.locator(recruitmentPageLocator.vipCandidate);
+  }
+  get candidateName() {
+    return this.page.locator(recruitmentPageLocator.candidateName);
+  }
+  get deleteButton() {
+    return this.page.locator(recruitmentPageLocator.deleteButton)
   }
   get status() {
     return this.page.locator(recruitmentPageLocator.status);

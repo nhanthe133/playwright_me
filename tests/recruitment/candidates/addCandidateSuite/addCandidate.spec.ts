@@ -2,14 +2,14 @@ import { test, expect, type Page } from "@playwright/test";
 import { LoginPage } from "../../../../pom/loginPage";
 import { RecruitmentPage } from "../../../../pom/recruitmentPage";
 import account from "../../../../data/account.json";
-import { deleteRecord } from '../../../../utils/deleteRecord';
+import { deleteRecord } from '../../../../pom/recruitmentPom/deleteRecord';
 import {
   createValidUser,
   createInvalidEMail,
   createInvalidDate,
 } from "../../../../data/fakeData";
-import { fullName } from "../../../../utils/fullName";
-import { halfName } from "../../../../utils/halfName";
+import { fullName } from "../../../../pom/recruitmentPom/fullName";
+import { halfName } from "../../../../pom/recruitmentPom/halfName";
 
 import ValidUser from "../../../../data/fakeData";
 import recruirmenPageLocator from "../../../../locators/recruitmentPageLocator.json";
@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   loginPage = new LoginPage(page);
   recruitmentPage = new RecruitmentPage(page);
   await page.goto(
-    "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
+    "./auth/login"
   );
   await loginPage.login(
     account.adminAccount.username,
@@ -33,9 +33,10 @@ test("Showing Recruitment page when clicking on Recruitment button", async ({
   page,
 }) => {
   await expect(recruitmentPage.recruitmentLink).toBeVisible();
-  await expect(page.url()).toBe(
-    "https://opensource-demo.orangehrmlive.com/web/index.php/recruitment/viewCandidates"
-  );
+  // await expect(page.url()).toBe(
+  //   "/recruitment/viewCandidates"
+  // );
+  await expect(page).toHaveURL('/web/recruitment/viewCandidates'); 
   await expect(recruitmentPage.recruitmentHeader).toBeVisible();
 });
 
@@ -56,7 +57,7 @@ test.describe("Add Candidate Suite", () => {
       recruitmentPage.browseFile.click(),
     ]);
     await fileChooser.setFiles(
-      "C:/Users/VanThe/Desktop/dummy folder/correct.docx"
+      "files/correct.docx"
     );
 
     await recruitmentPage.inputFull(
@@ -115,7 +116,7 @@ test.describe("Add Candidate Suite", () => {
       recruitmentPage.browseFile.click(),
     ]);
     await fileChooser.setFiles(
-      "C:/Users/VanThe/Desktop/dummy folder/oversize.mp4"
+      "files/oversize.mp4"
     );
     await expect(recruitmentPage.errorFile).toBeVisible();
     await expect(page.getByText("Attachment Size Exceeded")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
@@ -127,7 +128,7 @@ test.describe("Add Candidate Suite", () => {
       recruitmentPage.browseFile.click(),
     ]);
     await fileChooser.setFiles(
-      "C:/Users/VanThe/Desktop/dummy folder/invalidtype.jpg"
+      "files/invalidtype.jpg"
     );
     await expect(recruitmentPage.errorFile).toBeVisible();
     await expect(page.getByText("File type not allowed")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
@@ -144,9 +145,7 @@ test.describe("Add Candidate Suite", () => {
 
   test("Navigation to Recruitment page when clicking the cancel button", async ({page}) => {
     await recruitmentPage.cancelButton.click();
-    await expect(page.url()).toBe(
-      "https://opensource-demo.orangehrmlive.com/web/index.php/recruitment/viewCandidates"
-    );
+    await expect(page).toHaveURL('/web/recruitment/viewCandidates');
     await expect(recruitmentPage.recruitmentHeader).toBeVisible();
   });
 });
