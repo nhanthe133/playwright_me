@@ -1,59 +1,62 @@
-import { Locator, Page } from '@playwright/test';
-import loginPageLocator from '../locators/loginPageLocator.json';
-import { pressKeyOnLocator } from '../utils/pressKeyOnLocator';
+import { Locator, Page } from "@playwright/test";
+import loginPageLocator from "../locators/loginPageLocator.json";
+import { pressKeyOnLocator } from "../utils/pressKeyOnLocator";
 export class LoginPage {
-    private page: Page;
+  private page: Page;
 
-    constructor(page: Page) {
-        this.page = page;
+  constructor(page: Page) {
+    this.page = page;
+  }
+
+  async login(username?: string, password?: string, _login: boolean = true) {
+    if (username) {
+      await this.inputUsername.fill(username);
     }
-
-    async login(username?: string, password?: string, _login: boolean = true) {
-        if (username) {
-            await this.inputUsername.fill(username)
-        }
-        if (password) {
-            await this.inputPassword.fill(password)
-        }
-        if (_login) {
-            await this.submitButton.click()
-        }
+    if (password) {
+      await this.inputPassword.fill(password);
     }
-
-    async pressKeyOnLocator(locator: Locator | string, key: string, options?: {
-        delay?: number;
-        noWaitAfter?: boolean;
-        timeout?: number;
-    }) {
-        await pressKeyOnLocator(this.page, locator, key, options);
+    if (_login) {
+      await this.submitButton.click();
     }
+  }
 
-    get inputUsername() {
-        return this.page.locator(loginPageLocator.inputUsername);
+  async pressKeyOnLocator(
+    locator: Locator | string,
+    key: string,
+    options?: {
+      delay?: number;
+      noWaitAfter?: boolean;
+      timeout?: number;
     }
+  ) {
+    await pressKeyOnLocator(this.page, locator, key, options);
+  }
 
-    get inputPassword() {
-        return this.page.locator(loginPageLocator.inputPassword);
-    }
+  get inputUsername() {
+    return this.page.locator(loginPageLocator.inputUsername);
+  }
 
-    get submitButton() {
-        return this.page.locator(loginPageLocator.submitButton);
-    }
+  get inputPassword() {
+    return this.page.locator(loginPageLocator.inputPassword);
+  }
 
-    get dashboardLink() {
-        return this.page.getByRole('link', { name: 'Dashboard' });
-    }
+  get submitButton() {
+    return this.page.locator(loginPageLocator.submitButton);
+  }
 
-    get errorUsername() {
-        return this.page.locator(loginPageLocator.errorUsername);
-    }
+  get dashboardLink() {
+    return this.page.getByRole("link", { name: "Dashboard" });
+  }
 
-    get errorPassword() {
-        return this.page.locator(loginPageLocator.errorPassword);
-    }
+  get errorUsername() {
+    return this.page.locator(loginPageLocator.errorUsername);
+  }
 
-    get alertLocator() {
-        return this.page.locator(loginPageLocator.alertLocator);
-    }
+  get errorPassword() {
+    return this.page.locator(loginPageLocator.errorPassword);
+  }
 
+  get alertLocator() {
+    return this.page.locator(loginPageLocator.alertLocator);
+  }
 }

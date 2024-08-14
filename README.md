@@ -29,8 +29,8 @@ npm run testfile loginTest:14
 ```
 ### Run the test with the title
 ```sh
-npm run testtitle "<title>"
-npm run testtitle "login failed when inputing only user name"
+npm run testtitle "<title>|<title>"
+npm run testtitle "login failed when inputing only user name|login failed when inputing only password"
 ```
 ### Run the tests with headed browser
 ```sh

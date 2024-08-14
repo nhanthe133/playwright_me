@@ -1,18 +1,21 @@
 {
     "recruitmentHeader":"//div/child::div/child::span/child::h6",
     "addButton":"//div/child::div/child::button[@class='oxd-button oxd-button--medium oxd-button--secondary']",
-    "inputFirstName":"input[name=firstName]",
-    "inputMiddleName":"input[name=middleName]",
-    "inputLastName":"input[name=lastName]",
+    "inputFirstName":"//input[@name='firstName']",
+    "inputMiddleName":"//input[@name='middleName']",
+    "inputLastName":"//input[@name='lastName']",
     "inputEmail":"//label[text()='Email']/parent::div/following-sibling::div/input",
-    "submitAdd":"button[type=submit]",
+    "submitAdd":"//button[@type='submit']",
     "appStage":"//form/child::h6",
     "contactNumber": "//label[text()='Contact Number']/parent::div/following-sibling::div/input",
     "keyWords":"//label[text()='Keywords']/parent::div/following-sibling::div/input",
     "dateOfApp":"//div[@class='oxd-date-input']/child::input",
+    "from": "//input[@placeholder='From']",
+    "to": "//input[@placeholder='To']",
     "notes":"//label/parent::div/following-sibling::div/textarea",
+    "caretButton":"//div[@class='--toggle']/button",
    
-    "vacancyName":"//div/child::span[text()='Payroll Administrator']",
+    
     "browseFile":"//div[@class='oxd-file-button']/following-sibling::div",
     "success":"//div/child::p/following-sibling::p",
     "errorFirstName":"//input[@name='firstName']/parent::div/following-sibling::span",
@@ -23,17 +26,26 @@
     "cancelButton":"//div[@class='oxd-form-actions']/button[@type='button']",
     "trashBin": "//i[@class='oxd-icon bi-trash']",
     "jobTitle": "//label[text()='Job Title']/parent::div/following-sibling::div/div/div",
+    "method": "//label[text()='Method of Application']/parent::div/following-sibling::div/div/div",
     "vacancy":"//label[text()='Vacancy']/parent::div/following-sibling::div/div/div",
     "jobTitleName":"//div/child::span[text()='Payroll Administrator']",
-    "submitButton" : "button[type=submit]",
+    "methodName":"//div/child::span[text()='Manual']",
+    "submitButton" : "//button[@type='submit']",
+    "resetButton" : "//button[@type='reset']",
 
     "status": "//label[text()='Status']/parent::div/following-sibling::div/div/div",
     "statusName":"//div/child::span[text()='Application Initiated']",
 
-    "vipCandidate":"//div[contains(@class, 'oxd-autocomplete-tex')]/input",
-    "candidateName":"",
-    "deleteButton": "button:has(i.oxd-icon.bi-trash.oxd-button-icon)",
-    "trashButton": "button:has(i.oxd-icon.bi-trash)"
+    "candidateField":"//div[contains(@class, 'oxd-autocomplete-tex')]/input",
+    "vacancyName":"//div/child::span[text()='Payroll Administrator']",
+    "vacancyName2":"//div/child::span[text()='Senior QA Lead']",
+    "deleteButton": "//button[i[contains(@class, 'oxd-icon') and contains(@class, 'bi-trash') and contains(@class, 'oxd-button-icon')]]",
+    "trashButton": "//button[i[contains(@class, 'oxd-icon') and contains(@class, 'bi-trash')]]",
+    "statusRowName":"//div[contains(text(), 'Application Initiated')]",
+    "vacancyRowName":"//div[contains(@class, 'oxd-table-row') and contains(., 'Payroll Administrator')]"
+    
     
 
 }
+
+

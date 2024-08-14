@@ -1,114 +1,134 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 import recruitmentPageLocator from "../locators/recruitmentPageLocator.json";
+import inputRecruitment from "../locators/inputRecruitment.json";
+import { waitForElementVisible } from "../utils/waitForVisible";
 
+export type User = {
+  firstName: string;
+  lastName?: string;
+  email?: string;
+  middleName?: string;
+  contactNumber?: string;
+  keywords?: string;
+  dateOfApp?: string;
+  notes?: string;
+};
 
-export function getFullNameLocator(fullName: string) {
-  return `div.oxd-table-row:has-text("${fullName}")`;
+export async function fillTheFields(user: User, page) {
+  for (let prop in user) {
+    await page.locator(inputRecruitment[`input${prop}`]).fill(user[prop]);
+  }
 }
-
+export function getFullNameRowLocator(fullName: string) {
+  return `//div[contains(@class, "oxd-table-row") and contains(., "${fullName}")]`;
+}
 export function getFullCandidateName(fullName: string) {
-  return `//div/child::span[text()='${fullName}']`;
+  return `//div[contains(@class, "oxd-autocomplete-option")]/child::span[text()="${fullName}"]`;
 }
+export function getHalfCandidateName(halfName: string) {
+  return `//div[@role="listbox"]//div[@role="option"]//span[text()="${halfName}"]`;
+}
+
+export function fullNameCombiner(page, ValidUser) {
+  const firstName = ValidUser.firstName;
+  const middleName = ValidUser.middleName ? `${ValidUser.middleName} ` : "";
+  const lastName = ValidUser.lastName;
+  const fullName = `${firstName} ${middleName}${lastName}`;
+  return page.locator(getFullNameRowLocator(fullName));
+}
+export function halfNameCombiner(page, ValidUser) {
+  const firstName = ValidUser.firstName;
+  const lastName = ValidUser.lastName;
+  const halfName = `${firstName} ${lastName}`;
+  return page.locator(getFullNameRowLocator(halfName));
+}
+export function fullCandidateName(page, ValidUser) {
+  const firstName = ValidUser.firstName;
+  const middleName = ValidUser.middleName ? `${ValidUser.middleName} ` : "";
+  const lastName = ValidUser.lastName;
+  const fullName = `${firstName} ${middleName}${lastName}`;
+  return page.locator(getFullCandidateName(fullName));
+}
+export function halfCandidateName(page, ValidUser) {
+  const firstName = ValidUser.firstName;
+  const lastName = ValidUser.lastName;
+  const halfName = `${firstName} ${lastName}`;
+  return page.locator(getHalfCandidateName(halfName));
+}
+
+export async function addRecord(page, recruitmentPage, ValidUser) {
+  await recruitmentPage.recruitmentLink.click();
+  await recruitmentPage.addButton.click();
+  const formattedDate = ValidUser.dateOfApp.split("T")[0];
+  await recruitmentPage.dateOfApp.clear();
+  await recruitmentPage.vacancy.click();
+  await recruitmentPage.vacancyName.click();
+
+  const [fileChooser] = await Promise.all([
+    page.waitForEvent("filechooser"),
+    recruitmentPage.browseFile.click(),
+  ]);
+  await fileChooser.setFiles("files/correct.docx");
+
+  const fully: User = {
+    firstName: ValidUser.firstName,
+    lastName: ValidUser.lastName,
+    email: ValidUser.email,
+    middleName: ValidUser.middleName,
+    contactNumber: ValidUser.contactNumber,
+    keywords: ValidUser.keywords,
+    dateOfApp: formattedDate,
+    notes: ValidUser.notes,
+  };
+
+  await fillTheFields(fully, page);
+  await recruitmentPage.submitAdd.click();
+}
+
+export async function deleteRecord(
+  fullName: any,
+  firstName: any,
+  candidateName,
+  page: any,
+  recruitmentPage: any
+) {
+  await recruitmentPage.recruitmentLink.click();
+  await recruitmentPage.candidateField.click();
+  await recruitmentPage.candidateField.fill(firstName); //fill first name
+  await candidateName.click();
+  await recruitmentPage.submitButton.click();
+  await expect(fullName).toBeVisible();
+  const rowName = fullName.locator(recruitmentPage.trashButton);
+  await waitForElementVisible(rowName);
+  await rowName.click();
+  await recruitmentPage.deleteButton.click();
+  await expect(recruitmentPage.successMessage).toBeVisible();
+}
+
 
 export class RecruitmentPage {
   private page: Page;
-
   constructor(page: Page) {
     this.page = page;
   }
-  row(fullName: any) {
-    return `div.oxd-table-row:has-text("${fullName}")`;
+
+  get vacancyRowName() {
+    return this.page.locator(recruitmentPageLocator.vacancyRowName);
   }
-
-  async inputFull(
-    firstName: string,
-    lastName?: string,
-    email?: string,
-    middleName?: string,
-    contactNumber?: string,
-    keywords?: string,
-    dateOfApp?: string,
-    notes?: string,
-    _submit: boolean = true
-  ) {
-    // const user = createValidUser();
-    const fields = [
-      { field: this.inputFirstName, value: firstName },
-      { field: this.inputMiddleName, value: middleName },
-      { field: this.inputLastName, value: lastName },
-      { field: this.inputEmail, value: email },
-      { field: this.contactNumber, value: contactNumber },
-      { field: this.keywords, value: keywords },
-      { field: this.dateOfApp, value: dateOfApp },
-      { field: this.notes, value: notes },
-    ];
-
-    for (const { field, value } of fields) {
-      if (value) {
-        await field.fill(value);
-      }
-    }
-    if (_submit) {
-      await this.submitAdd.click();
-    }
+  get from() {
+    return this.page.locator(recruitmentPageLocator.from);
   }
-
-  async inputRequired(
-    firstName?: string,
-    lastName?: string,
-    email?: string,
-    _submit: boolean = true
-  ) {
-    const fields = [
-      { field: this.inputFirstName, value: firstName },
-      { field: this.inputLastName, value: lastName },
-      { field: this.inputEmail, value: email },
-    ];
-    for (const { field, value } of fields) {
-      if (value) {
-        await field.fill(value);
-      }
-    }
-    if (_submit) {
-      await this.submitAdd.click();
-    }
+  get to() {
+    return this.page.locator(recruitmentPageLocator.to);
   }
-
-  async inputInvalidEmail(email?: string, _submit: boolean = true) {
-    const fields = [{ field: this.inputEmail, value: email }];
-    for (const { field, value } of fields) {
-      if (value) {
-        await field.fill(value);
-      }
-    }
-    if (_submit) {
-      await this.submitAdd.click();
-    }
-  }
-
-  async inputInvalidDate(dateOfApp?: string, _submit: boolean = true) {
-    const fields = [{ field: this.dateOfApp, value: dateOfApp }];
-    for (const { field, value } of fields) {
-      if (value) {
-        await field.fill(value);
-      }
-    }
-    if (_submit) {
-      await this.submitAdd.click();
-    }
-  }
-
   get trashButton() {
     return this.page.locator(recruitmentPageLocator.trashButton);
   }
-  get vipCandidate() {
-    return this.page.locator(recruitmentPageLocator.vipCandidate);
-  }
-  get candidateName() {
-    return this.page.locator(recruitmentPageLocator.candidateName);
+  get candidateField() {
+    return this.page.locator(recruitmentPageLocator.candidateField);
   }
   get deleteButton() {
-    return this.page.locator(recruitmentPageLocator.deleteButton)
+    return this.page.locator(recruitmentPageLocator.deleteButton);
   }
   get status() {
     return this.page.locator(recruitmentPageLocator.status);
@@ -118,6 +138,12 @@ export class RecruitmentPage {
   }
   get jobTitle() {
     return this.page.locator(recruitmentPageLocator.jobTitle);
+  }
+  get method() {
+    return this.page.locator(recruitmentPageLocator.method);
+  }
+  get methodName() {
+    return this.page.locator(recruitmentPageLocator.methodName);
   }
   get cancelButton() {
     return this.page.locator(recruitmentPageLocator.cancelButton);
@@ -167,7 +193,6 @@ export class RecruitmentPage {
   get recruitmentLink() {
     return this.page.getByRole("link", { name: "Recruitment" });
   }
-
   get recruitmentHeader() {
     return this.page.locator(recruitmentPageLocator.recruitmentHeader);
   }
@@ -176,6 +201,12 @@ export class RecruitmentPage {
   }
   get submitButton() {
     return this.page.locator(recruitmentPageLocator.submitButton);
+  }
+  get resetButton() {
+    return this.page.locator(recruitmentPageLocator.resetButton);
+  }
+  get caretButton() {
+    return this.page.locator(recruitmentPageLocator.caretButton);
   }
   get inputFirstName() {
     return this.page.locator(recruitmentPageLocator.inputFirstName);
@@ -198,9 +229,4 @@ export class RecruitmentPage {
   get trashBin() {
     return this.page.locator(recruitmentPageLocator.trashBin);
   }
-
-  // this is backup plan for upper addButton
-  // get addButton() {
-  //     return this.page.getByRole('button').and(this.page.getByText(' Add '));
-  // }
 }
