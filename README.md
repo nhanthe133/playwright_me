@@ -9,8 +9,8 @@ npm install
 npm init playwright@latest
 ```
 
-## How to run
-
+# How to run
+## Login page
 ### Run all the tests
 ```sh
 npm run runalltest
@@ -59,4 +59,33 @@ npm run testwebkit <text file name as a option>
 ### Run the tests in headed againt specific project webkit 
 ```sh
 npm run testwebkit:headed <text file name as a option>
+```
+
+## Recruitment Page
+
+### Run entire search candidate page
+```sh
+npm run allsearchcandidate
+```
+### Run a test or multiple tests in search candidate page with title
+```sh
+npm run searchcandidate "<title>"
+npm run searchcandidate "<title>|<title>"
+```
+example:
+```sh
+npm run searchcandidate "Filter candidates by Vacancy|Filter candidates by Status"
+```
+### Run entire add candidate page
+```sh
+npm run alladdcandidate
+```
+### Run a test or multiple tests in search candidate page with title
+```sh
+npm run addcandidate "<title>"
+npm run addcandidate "<title>|<title>"
+```
+example:
+```sh
+npm run addcandidate "File size validation alert should be shown when upload file with size larger than 1MB|File type not allowed validation alert should be shown when uploading invalid file type"
 ```

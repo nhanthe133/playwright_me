@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 import loginPageLocator from "../locators/loginPageLocator.json";
-import { pressKeyOnLocator } from "../utils/pressKeyOnLocator";
+import { pressKeyOnLocator } from "../helpers/utils";
 export class LoginPage {
   private page: Page;
 

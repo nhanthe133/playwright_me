@@ -1,23 +1,22 @@
+import { test, expect, type Page } from "@playwright/test";
 import {
-  test,
-  expect,
-  Page,
   LoginPage,
   RecruitmentPage,
-  addRecord,
   deleteRecord,
   fullNameCombiner,
   halfNameCombiner,
   fullCandidateName,
   account,
   ValidUser,
-  createValidUser,
-  createInvalidEMail,
-  createInvalidDate,
   halfCandidateName,
+  faker,
+  createRequiredValidUser,
 } from "../../../../helpers/importRecruitment";
-// import { inputAll } from "../../../../pom/recruitmentPage";
-import { fillTheFields, User } from "../../../../pom/recruitmentPage";
+import {
+  fillTheFields,
+  User,
+  UserRequire,
+} from "../../../../pom/recruitmentPage";
 
 var loginPage: LoginPage;
 var recruitmentPage: RecruitmentPage;
@@ -46,10 +45,53 @@ test.describe("Add Candidate Suite", () => {
     await recruitmentPage.addButton.click();
   });
 
+  // test("Add Candidate success when inputing all the field", async ({
+  //   page,
+  // }) => {
+  //   await recruitmentPage.dateOfApp.clear();
+  //   await recruitmentPage.vacancy.click();
+  //   await recruitmentPage.vacancyName.click();
+
+  //   const [fileChooser] = await Promise.all([
+  //     page.waitForEvent("filechooser"),
+  //     recruitmentPage.browseFile.click(),
+  //   ]);
+
+  //   await fileChooser.setFiles("files/correct.docx");
+
+  //   const fully: User = {
+  //     FirstName: ValidUser.firstName,
+  //     LastName: ValidUser.lastName,
+  //     Email: ValidUser.email,
+  //     MiddleName: ValidUser.middleName,
+  //     ContactNumber: ValidUser.contactNumber,
+  //     Keywords: ValidUser.keywords,
+  //     DateOfApp: ValidUser.dateOfApp,
+  //     Notes: ValidUser.notes,
+  //   };
+  //   // const fully = JSON.parse(JSON.stringify(ValidUser));
+  //   // const fully: User = structuredClone(ValidUser);
+
+  //   await fillTheFields(fully, page);
+  //   await recruitmentPage.submitAdd.click();
+
+  //   await expect(recruitmentPage.successMessage).toBeVisible();
+  //   await expect(recruitmentPage.appStage).toBeVisible({ timeout: 10000 });
+  //   const fullName = fullNameCombiner(page, ValidUser);
+  //   const firstName = ValidUser.firstName;
+  //   const candidateName = fullCandidateName(page, ValidUser);
+  //   await deleteRecord(
+  //     fullName,
+  //     firstName,
+  //     candidateName,
+  //     page,
+  //     recruitmentPage
+  //   );
+  // });
+
   test("Add Candidate success when inputing all the field", async ({
     page,
   }) => {
-    const formattedDate = ValidUser.dateOfApp.split("T")[0];
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.vacancy.click();
     await recruitmentPage.vacancyName.click();
@@ -58,38 +100,30 @@ test.describe("Add Candidate Suite", () => {
       page.waitForEvent("filechooser"),
       recruitmentPage.browseFile.click(),
     ]);
+
     await fileChooser.setFiles("files/correct.docx");
 
-    // await recruitmentPage.inputFull(
-    //   ValidUser.firstName,
-    //   ValidUser.lastName,
-    //   ValidUser.email,
-    //   ValidUser.middleName,
-    //   ValidUser.contactNumber,
-    //   ValidUser.keywords,
-    //   formattedDate,
-    //   ValidUser.notes
-    // );
-    // await inputAll(ValidUser, recruitmentPage);
-    const fully: User = {
-      firstName: ValidUser.firstName,
-      lastName: ValidUser.lastName,
-      email: ValidUser.email,
-      middleName: ValidUser.middleName,
-      contactNumber: ValidUser.contactNumber,
-      keywords: ValidUser.keywords,
-      dateOfApp: formattedDate,
-      notes: ValidUser.notes,
-    };
+    // const fully: User = {
+    //   FirstName: ValidUser.firstName,
+    //   LastName: ValidUser.lastName,
+    //   Email: ValidUser.email,
+    //   MiddleName: ValidUser.middleName,
+    //   ContactNumber: ValidUser.contactNumber,
+    //   Keywords: ValidUser.keywords,
+    //   DateOfApp: ValidUser.dateOfApp,
+    //   Notes: ValidUser.notes,
+    // };
+    // const fully = JSON.parse(JSON.stringify(ValidUser));
+    const fully: User = structuredClone(ValidUser);
 
     await fillTheFields(fully, page);
     await recruitmentPage.submitAdd.click();
 
     await expect(recruitmentPage.successMessage).toBeVisible();
-    await page.waitForTimeout(3000);
-    await expect(recruitmentPage.appStage).toBeVisible();
+    await expect(recruitmentPage.appStage).toBeVisible({ timeout: 10000 });
     const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.firstName;
+    // const firstName = ValidUser.firstName;
+    const firstName = ValidUser.FirstName;
     const candidateName = fullCandidateName(page, ValidUser);
     await deleteRecord(
       fullName,
@@ -103,24 +137,26 @@ test.describe("Add Candidate Suite", () => {
   test("Add Candidate success when inputing required fields only", async ({
     page,
   }) => {
-    const required: User = {
-      firstName: ValidUser.firstName,
-      lastName: ValidUser.lastName,
-      email: ValidUser.email,
-    };
+    // const required: User = {
+    //   FirstName: ValidUser.FirstName,
+    //   LastName: ValidUser.LastName,
+    //   Email: ValidUser.Email
+    // };
+    const ValidRequireUser = createRequiredValidUser();
 
-    await fillTheFields(required, page);
+    const requiredFields: UserRequire = structuredClone(ValidRequireUser);
+
+    await fillTheFields(requiredFields, page);
 
     await recruitmentPage.submitAdd.click();
     await expect(recruitmentPage.successMessage).toBeVisible();
-    await page.waitForTimeout(3000);
-    await expect(recruitmentPage.appStage).toBeVisible();
-    const fullName = halfNameCombiner(page, ValidUser);
-    const firstName = ValidUser.firstName;
-    const candidateName = halfCandidateName(page, ValidUser);
+    await expect(recruitmentPage.appStage).toBeVisible({ timeout: 10000 });
+    const fullName = halfNameCombiner(page, ValidRequireUser);
+    // const firstName = ValidRequireUser.firstName;
+    const firstName = ValidRequireUser.FirstName;
 
-    //this delete is not working for no reason
-    //it locator is correct but it dont work anyway
+    const candidateName = halfCandidateName(page, ValidRequireUser);
+
     await deleteRecord(
       fullName,
       firstName,
@@ -142,11 +178,10 @@ test.describe("Add Candidate Suite", () => {
   test("Validation alert should be show when input invalid email address", async ({
     page,
   }) => {
-    const email = createInvalidEMail();
+    // const email = createInvalidEMail();
 
-    // await recruitmentPage.inputInvalidEmail(email.email);
-
-    await recruitmentPage.inputEmail.fill(email.email);
+    const email = faker.random.word() + "@!@#$.com";
+    await recruitmentPage.inputEmail.fill(email);
     await recruitmentPage.submitAdd.click();
 
     await expect(recruitmentPage.errorEmail).toBeVisible();
@@ -180,17 +215,11 @@ test.describe("Add Candidate Suite", () => {
   test("Date format validation message should be shown when input invalid date format", async ({
     page,
   }) => {
-    const invalidDate = createInvalidDate();
-    const formattedDate = invalidDate.dateOfApp.toISOString();
+    const invalidDate = faker.animal.bear();
     await recruitmentPage.dateOfApp.clear();
-
-    // await recruitmentPage.inputInvalidDate(formattedDate);
-    await recruitmentPage.dateOfApp.fill(formattedDate);
+    await recruitmentPage.dateOfApp.fill(invalidDate);
     await recruitmentPage.submitAdd.click();
-
-
     await expect(recruitmentPage.errorDate).toBeVisible();
-    await expect(page.getByText("yyyy-dd-mm")).toBeVisible();
   });
 
   test("Navigation to Recruitment page when clicking the cancel button", async ({

@@ -14,9 +14,14 @@
     "testfirefox:headed": "npx playwright --project=firefox --headed test",
     "testwebkit": "npx playwright test --project=webkit",
     "testwebkit:headed": "npx playwright test --project=webkit --headed",
-
+    "allsearchcandidate": "npx playwright test recruitment/candidates/searchCandidateSuite/searchCandidate --headed --project=chromium",
+    "alladdcandidate": "npx playwright test recruitment/candidates/addCandidateSuite/addCandidate --headed --project=chromium",
     "addcandidate": "npx playwright test recruitment/candidates/addCandidateSuite/addCandidate --headed --project=chromium -g",
-    "searchcandidate": "npx playwright test recruitment/candidates/searchCandidateSuite/searchCandidate --headed --project=chromium -g"
+    "searchcandidate": "npx playwright test recruitment/candidates/searchCandidateSuite/searchCandidate --headed --project=chromium -g",
+    "detailcandidate": "npx playwright test recruitment/candidates/detailCandidateSuite/detailCandidate --headed --project=chromium -g",
+    "editcandidate": "npx playwright test recruitment/candidates/editCandidateSuite/editCandidate --headed --project=chromium -g",
+    "deletecandidate": "npx playwright test recruitment/candidates/deleteCandidateSuite/deleteCandidate --headed --project=chromium -g"
+
   },
   "keywords": [],
   "author": "",
@@ -25,5 +30,8 @@
     "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.45.3",
     "@types/node": "^22.0.2"
+  },
+  "dependencies": {
+    "date-fns": "^3.6.0"
   }
 }

@@ -28,6 +28,8 @@
     "jobTitle": "//label[text()='Job Title']/parent::div/following-sibling::div/div/div",
     "method": "//label[text()='Method of Application']/parent::div/following-sibling::div/div/div",
     "vacancy":"//label[text()='Vacancy']/parent::div/following-sibling::div/div/div",
+    "hiring":"//label[text()='Hiring Manager']/parent::div/following-sibling::div/div/div",
+    "hireName":"//p[@class='oxd-userdropdown-name']",
     "jobTitleName":"//div/child::span[text()='Payroll Administrator']",
     "methodName":"//div/child::span[text()='Manual']",
     "submitButton" : "//button[@type='submit']",
@@ -38,14 +40,31 @@
 
     "candidateField":"//div[contains(@class, 'oxd-autocomplete-tex')]/input",
     "vacancyName":"//div/child::span[text()='Payroll Administrator']",
-    "vacancyName2":"//div/child::span[text()='Senior QA Lead']",
+    "seniorQA":"//div/child::span[text()='Senior QA Lead']",
+    "emptyVacancy": "//div[text()='-- Select --']",
     "deleteButton": "//button[i[contains(@class, 'oxd-icon') and contains(@class, 'bi-trash') and contains(@class, 'oxd-button-icon')]]",
     "trashButton": "//button[i[contains(@class, 'oxd-icon') and contains(@class, 'bi-trash')]]",
     "statusRowName":"//div[contains(text(), 'Application Initiated')]",
-    "vacancyRowName":"//div[contains(@class, 'oxd-table-row') and contains(., 'Payroll Administrator')]"
+    "vacancyRowName":"//div[contains(@class, 'oxd-table-row') and contains(., 'Payroll Administrator')]",
     
-    
+    "eye":"//button[i[contains(@class, 'oxd-icon') and contains(@class, 'bi-eye-fill')]]",
+    "downloadIcon":"//button[i[contains(@class, 'oxd-icon') and contains(@class, 'bi-download')]]",
 
+    "dtVacancy":"//p[contains(@class, 'oxd-text oxd-text--p') and text()='Payroll Administrator']",
+    "dtJVacancy":"//div[@class='oxd-select-text-input']",
+    "fileName":"//p[@class='oxd-text oxd-text--p orangehrm-file-name']",
+    "rejectButton": "//button[@class='oxd-button oxd-button--medium oxd-button--danger']",
+    "shortlistButton":"//button[@class='oxd-button oxd-button--medium oxd-button--success']",
+    "h6":"//div[@class='orangehrm-card-container']/h6[contains(@class, 'oxd-text')]",
+    "switch": "//span[contains(@class, 'oxd-switch-input')]",
+    "replaceFile":"//div[@class='oxd-input-group oxd-input-field-bottom-space'][3]//label[@class]",
+    "deleteFile":"//div[@class='oxd-input-group oxd-input-field-bottom-space'][2]//label[@class]",
+    "confirmButton": "//div[@class='orangehrm-modal-footer']/button[contains(@class, 'oxd-button')][2]",
+    "download":"//i[@class='oxd-icon bi-file-earmark-text orangehrm-file-icon']",
+    "cancelDelete":"//div[@class='orangehrm-modal-footer']/button[contains(@class, 'oxd-button')][1]",
+    "checkBox": "//i[@class='oxd-icon bi-check oxd-checkbox-input-icon']",
+    "deleteSelected": "//div[@class='orangehrm-horizontal-padding orangehrm-vertical-padding']//button[contains(@class, 'oxd-button')]",
+    "ultimateDelete":"//div[@class='orangehrm-modal-footer']/button[contains(@class, 'oxd-button')][2]"
 }
 
 

@@ -1,10 +1,10 @@
 {
-    "inputfirstName":"//input[@name='firstName']",
-    "inputlastName":"//input[@name='lastName']",
-    "inputemail":"//label[text()='Email']/parent::div/following-sibling::div/input",
-    "inputmiddleName":"//input[@name='middleName']",
-    "inputcontactNumber": "//label[text()='Contact Number']/parent::div/following-sibling::div/input",
-    "inputkeywords":"//label[text()='Keywords']/parent::div/following-sibling::div/input",
-    "inputdateOfApp":"//div[@class='oxd-date-input']/child::input",
-    "inputnotes":"//label/parent::div/following-sibling::div/textarea"
+    "inputFirstName":"//input[@name='firstName']",
+    "inputLastName":"//input[@name='lastName']",
+    "inputEmail":"//label[text()='Email']/parent::div/following-sibling::div/input",
+    "inputMiddleName":"//input[@name='middleName']",
+    "inputContactNumber": "//label[text()='Contact Number']/parent::div/following-sibling::div/input",
+    "inputKeywords":"//label[text()='Keywords']/parent::div/following-sibling::div/input",
+    "inputDateOfApp":"//div[@class='oxd-date-input']/child::input",
+    "inputNotes":"//label/parent::div/following-sibling::div/textarea"
 }

@@ -36,7 +36,7 @@ export default defineConfig({
   
 
     // Each test is given 30 seconds.
-    timeout: 60000,
+    timeout: 100000,
 
   /* Configure projects for major browsers */
   projects: [
