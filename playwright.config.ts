@@ -13,7 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -29,10 +29,14 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    baseURL: 'https://opensource-demo.orangehrmlive.com/web/index.php',
   },
+  
+    
+  
 
     // Each test is given 30 seconds.
-    timeout: 60000,
+    timeout: 100000,
 
   /* Configure projects for major browsers */
   projects: [
@@ -40,7 +44,7 @@ export default defineConfig({
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'], 
-        viewport: { width: 1920, height: 1080}
+        viewport: { width: 1280, height: 580}
       
       },
     },
@@ -49,7 +53,7 @@ export default defineConfig({
       name: 'firefox',
       use: { 
         ...devices['Desktop Firefox'],
-        viewport: { width: 1920, height: 1080}
+        viewport: { width: 1366, height: 768}
       },
     },
 
@@ -57,7 +61,7 @@ export default defineConfig({
       name: 'webkit',
       use: { 
         ...devices['Desktop Safari'],
-        viewport: { width: 1920, height: 1080}
+        viewport: { width: 1366, height: 768}
       },
     },
 
@@ -88,4 +92,5 @@ export default defineConfig({
   //   url: 'http://127.0.0.1:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
+  
 });
