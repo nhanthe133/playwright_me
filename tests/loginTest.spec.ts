@@ -1,8 +1,8 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect} from "@playwright/test";
 import { LoginPage } from "../pom/loginPage";
 import account from "../data/account.json";
 
-var loginPage: LoginPage;
+let loginPage: LoginPage;
 
 test.beforeEach(async ({ page }) => {
   loginPage = new LoginPage(page);
@@ -60,27 +60,23 @@ test.describe("Login success", () => {
 });
 
 test.describe("Login failed", () => {
-  test("login failed when leaving username and password input are empty", async ({
-    page,
-  }) => {
+  test("login failed when leaving username and password input are empty", async () => {
     await loginPage.submitButton.click();
     await expect(loginPage.errorUsername).toBeVisible();
     await expect(loginPage.errorPassword).toBeVisible();
   });
 
-  test("login failed when inputing only user name", async ({ page }) => {
+  test("login failed when inputing only user name", async () => {
     await loginPage.login(account.adminAccount.username);
     await expect(loginPage.errorPassword).toBeVisible();
   });
 
-  test("login failed when inputing only password", async ({ page }) => {
+  test("login failed when inputing only password", async () => {
     await loginPage.login(undefined, account.adminAccount.password);
     await expect(loginPage.errorUsername).toBeVisible();
   });
 
-  test("login failed when inputing incorrect username and password", async ({
-    page,
-  }) => {
+  test("login failed when inputing incorrect username and password", async () => {
     await loginPage.login(
       account.invalidAccount.username,
       account.invalidAccount.password
@@ -91,7 +87,7 @@ test.describe("Login failed", () => {
     await expect(loginPage.alertLocator).toHaveText("Invalid credentials");
   });
 
-  test("login failed when inputing invalid password", async ({ page }) => {
+  test("login failed when inputing invalid password", async () => {
     await loginPage.login(
       account.adminAccount.username,
       account.invalidAccount.password
@@ -102,7 +98,7 @@ test.describe("Login failed", () => {
     await expect(loginPage.alertLocator).toHaveText("Invalid credentials");
   });
 
-  test("login failed when inputing invalid username", async ({ page }) => {
+  test("login failed when inputing invalid username", async () => {
     await loginPage.login(
       account.invalidAccount.username,
       account.adminAccount.password

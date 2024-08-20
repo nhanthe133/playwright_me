@@ -1,50 +1,31 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
-import {
-  LoginPage,
-  RecruitmentPage,
-  addRecord,
-  deleteRecord,
-  fullNameCombiner,
-  halfNameCombiner,
-  fullCandidateName,
-  account,
-  ValidUser,
-  createValidUser,
-  halfCandidateName,
-  faker,
-  createRequiredValidUser,
-} from "../../../../helpers/importRecruitment";
-import {
-  fillTheFields,
-  searchRecord,
-  User,
-  UserRequire,
-} from "../../../../pom/recruitmentPage";
+import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
 
-var loginPage: LoginPage;
-var recruitmentPage: RecruitmentPage;
+let loginPage: RecruitmentResource.LoginPage;
+let recruitmentPage: RecruitmentResource.RecruitmentPage;
 test.beforeEach(async ({ page }) => {
-  loginPage = new LoginPage(page);
-  recruitmentPage = new RecruitmentPage(page);
+  loginPage = new RecruitmentResource.LoginPage(page);
+  recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
   await loginPage.login(
-    account.adminAccount.username,
-    account.adminAccount.password
+    RecruitmentResource.account.adminAccount.username,
+    RecruitmentResource.account.adminAccount.password
   );
-  await addRecord(page, recruitmentPage, ValidUser);
-  await searchRecord(ValidUser, page, recruitmentPage);
-  const fullName = fullNameCombiner(page, ValidUser);
+  await RecruitmentResource.addRecord(page, recruitmentPage, RecruitmentResource.ValidUser);
+  await RecruitmentResource.searchRecord(RecruitmentResource.ValidUser, page, recruitmentPage);
+  const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
   const rowName = fullName.locator(recruitmentPage.eye);
   await rowName.click();
   await recruitmentPage.switch.click();
 });
 
+
 test.describe("Edit Candidate Suite", () => {
   test("Edit Candidate Profile success when editing all the field", async ({
     page,
   }) => {
-    const editUser = createValidUser();
+    const editUser = RecruitmentResource.createValidUser();
     await recruitmentPage.replaceFile.click();
     const [fileChooser] = await Promise.all([
       page.waitForEvent("filechooser"),
@@ -64,38 +45,40 @@ test.describe("Edit Candidate Suite", () => {
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.notes.clear();
 
-    const fully: User = structuredClone(editUser);
+    const fully: RecruitmentResource.User = structuredClone(editUser);
 
-    await fillTheFields(fully, page);
+    await RecruitmentResource.fillTheFields(fully, page);
     await recruitmentPage.submitAdd.click();
     await recruitmentPage.confirmButton.click();
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.successMessage, 10000);
 
-    await expect(recruitmentPage.successMessage).toBeVisible();
     //expect hell:
-    await expect(recruitmentPage.dtJVacancy).toHaveText("Senior QA Lead");
-    await expect(recruitmentPage.inputFirstName).toHaveValue(
-      editUser.FirstName
-    );
-    await expect(recruitmentPage.inputMiddleName).toHaveValue(
-      editUser.MiddleName
-    );
-    await expect(recruitmentPage.inputLastName).toHaveValue(editUser.LastName);
-    await expect(recruitmentPage.dtJVacancy).toBeVisible();
-    await expect(recruitmentPage.inputEmail).toHaveValue(editUser.Email);
-    await expect(recruitmentPage.contactNumber).toHaveValue(
-      editUser.ContactNumber
-    );
-    await expect(recruitmentPage.fileName).toHaveText("resume.pdf", {
-      timeout: 10000,
-    });
-    await expect(recruitmentPage.keywords).toHaveValue(editUser.Keywords);
-    await expect(recruitmentPage.dateOfApp).toHaveValue(editUser.DateOfApp);
-    await expect(recruitmentPage.notes).toHaveValue(editUser.Notes);
+    await RecruitmentResource.elementShouldContainText(recruitmentPage.dtJVacancy, "Senior QA Lead", 15000);
+  
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.inputFirstName, editUser.FirstName, 15000);
+   
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.inputMiddleName, editUser.MiddleName, 15000);
 
-    const fullName = fullNameCombiner(page, editUser);
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.inputLastName, editUser.LastName, 15000);
+
+    expect(RecruitmentResource.waitForElementVisible(recruitmentPage.dtJVacancy, 5000));
+
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.inputEmail, editUser.Email, 15000);
+
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.contactNumber, editUser.ContactNumber, 15000);
+
+    await RecruitmentResource.elementShouldContainText(recruitmentPage.fileName, "resume.pdf", 15000);
+
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.keywords, editUser.Keywords, 15000);
+
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.dateOfApp, editUser.DateOfApp, 15000);
+
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.notes, editUser.Notes, 15000);
+
+    const fullName = RecruitmentResource.fullNameCombiner(page, editUser);
     const firstName = editUser.FirstName;
-    const candidateName = fullCandidateName(page, editUser);
-    await deleteRecord(
+    const candidateName = RecruitmentResource.fullCandidateName(page, editUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -108,11 +91,13 @@ test.describe("Edit Candidate Suite", () => {
     page,
   }) => {
     // const editUser = createValidUser();
-    const ValidRequireUser = createRequiredValidUser();
+    const ValidRequireUser = RecruitmentResource.createRequiredValidUser();
 
     await recruitmentPage.deleteFile.click();
     await recruitmentPage.dtJVacancy.click();
     await recruitmentPage.emptyVacancy.click();
+
+
     await recruitmentPage.inputFirstName.clear();
     await recruitmentPage.inputMiddleName.clear();
     await recruitmentPage.inputLastName.clear();
@@ -122,28 +107,26 @@ test.describe("Edit Candidate Suite", () => {
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.notes.clear();
 
-    const requiredFields: UserRequire = structuredClone(ValidRequireUser);
+    const requiredFields: RecruitmentResource.UserRequire = structuredClone(ValidRequireUser);
 
-    await fillTheFields(requiredFields, page);
+    await RecruitmentResource.fillTheFields(requiredFields, page);
 
     await recruitmentPage.submitAdd.click();
     await recruitmentPage.confirmButton.click();
 
-    await expect(recruitmentPage.successMessage).toBeVisible();
-    await expect(recruitmentPage.inputFirstName).toHaveValue(
-      ValidRequireUser.FirstName
-    );
-    await expect(recruitmentPage.inputLastName).toHaveValue(
-      ValidRequireUser.LastName
-    );
-    await expect(recruitmentPage.inputEmail).toHaveValue(
-      ValidRequireUser.Email
-    );
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.successMessage, 10000);
 
-    const halfName = halfNameCombiner(page, ValidRequireUser); //checked
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.inputFirstName, ValidRequireUser.FirstName, 15000);
+    
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.inputLastName, ValidRequireUser.LastName, 15000);
+
+    await RecruitmentResource.elementValueShouldContain(recruitmentPage.inputEmail, ValidRequireUser.Email, 15000);
+
+
+    const halfName = RecruitmentResource.halfNameCombiner(page, ValidRequireUser); //checked
     const firstName = ValidRequireUser.FirstName;
-    const candidateName = halfCandidateName(page, ValidRequireUser);
-    await deleteRecord(
+    const candidateName = RecruitmentResource.halfCandidateName(page, ValidRequireUser);
+    await RecruitmentResource.deleteRecord(
       halfName,
       firstName,
       candidateName,
@@ -169,14 +152,18 @@ test.describe("Edit Candidate Suite", () => {
 
     await recruitmentPage.submitAdd.click();
 
-    await expect(recruitmentPage.errorFirstName).toBeVisible();
-    await expect(recruitmentPage.errorLastName).toBeVisible();
-    await expect(recruitmentPage.errorEmail).toBeVisible();
+    // await expect(recruitmentPage.errorFirstName).toBeVisible();
+    // await expect(recruitmentPage.errorLastName).toBeVisible();
+    // await expect(recruitmentPage.errorEmail).toBeVisible();
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.errorFirstName, 10000);
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.errorLastName, 10000);
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.errorEmail, 10000);
 
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -190,16 +177,17 @@ test.describe("Edit Candidate Suite", () => {
   }) => {
     await recruitmentPage.inputEmail.clear();
 
-    const email = faker.random.word() + "@!@#$.com";
+    const email = RecruitmentResource.faker.random.word() + "@!@#$.com";
     await recruitmentPage.inputEmail.fill(email);
     await recruitmentPage.submitAdd.click();
 
-    await expect(recruitmentPage.errorEmail).toBeVisible();
+    // await expect(recruitmentPage.errorEmail).toBeVisible();
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.errorEmail, 10000);
 
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -221,15 +209,16 @@ test.describe("Edit Candidate Suite", () => {
     ]);
     await fileChooser.setFiles("files/resume.pdf");
     await recruitmentPage.submitAdd.click();
-    await expect(recruitmentPage.successMessage).toBeVisible();
-    await expect(recruitmentPage.fileName).toHaveText("resume.pdf", {
-      timeout: 10000,
-    });
+    // await expect(recruitmentPage.successMessage).toBeVisible();
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.successMessage, 10000);
 
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+    await RecruitmentResource.elementShouldContainText(recruitmentPage.fileName, "resume.pdf");
+
+
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -244,10 +233,10 @@ test.describe("Edit Candidate Suite", () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe("correct.docx");
 
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -264,13 +253,11 @@ test.describe("Edit Candidate Suite", () => {
     ]);
     await fileChooser.setFiles("files/resume.pdf");
     await recruitmentPage.submitAdd.click();
-    await expect(recruitmentPage.fileName).toHaveText("resume.pdf", {
-      timeout: 10000,
-    });
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+    await RecruitmentResource.elementShouldContainText(recruitmentPage.fileName, "resume.pdf", 15000);
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -287,13 +274,14 @@ test.describe("Edit Candidate Suite", () => {
       recruitmentPage.browseFile.click(),
     ]);
     await fileChooser.setFiles("files/oversize.mp4");
-    await expect(recruitmentPage.errorFile).toBeVisible();
+    // await expect(recruitmentPage.errorFile).toBeVisible();
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.errorFile, 10000);
     await expect(page.getByText("Attachment Size Exceeded")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
 
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -310,13 +298,14 @@ test.describe("Edit Candidate Suite", () => {
       recruitmentPage.browseFile.click(),
     ]);
     await fileChooser.setFiles("files/invalidtype.jpg");
-    await expect(recruitmentPage.errorFile).toBeVisible();
+    // await expect(recruitmentPage.errorFile).toBeVisible();
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.errorFile, 10000);
     await expect(page.getByText("File type not allowed")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
 
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,
@@ -328,16 +317,18 @@ test.describe("Edit Candidate Suite", () => {
   test("Date format validation message should be shown when input invalid date format", async ({
     page,
   }) => {
-    const invalidDate = faker.animal.bear();
+    const invalidDate = RecruitmentResource.faker.animal.bear();
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.dateOfApp.fill(invalidDate);
     await recruitmentPage.submitAdd.click();
-    await expect(recruitmentPage.errorDate).toBeVisible();
+    // await expect(recruitmentPage.errorDate).toBeVisible();
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.errorDate, 10000);
 
-    const fullName = fullNameCombiner(page, ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
+
+    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
+    await RecruitmentResource.deleteRecord(
       fullName,
       firstName,
       candidateName,

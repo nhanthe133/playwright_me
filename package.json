@@ -21,15 +21,19 @@
     "detailcandidate": "npx playwright test recruitment/candidates/detailCandidateSuite/detailCandidate --headed --project=chromium -g",
     "editcandidate": "npx playwright test recruitment/candidates/editCandidateSuite/editCandidate --headed --project=chromium -g",
     "deletecandidate": "npx playwright test recruitment/candidates/deleteCandidateSuite/deleteCandidate --headed --project=chromium -g"
-
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.9.0",
     "@faker-js/faker": "^8.4.1",
     "@playwright/test": "^1.45.3",
-    "@types/node": "^22.0.2"
+    "@types/node": "^22.0.2",
+    "eslint": "^9.9.0",
+    "globals": "^15.9.0",
+    "lint": "^0.8.19",
+    "typescript-eslint": "^8.2.0"
   },
   "dependencies": {
     "date-fns": "^3.6.0"

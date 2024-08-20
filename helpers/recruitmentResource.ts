@@ -7,19 +7,28 @@ import {
   fullCandidateName,
   getHiringName,
   halfNameCombiner,
+  searchRecord,
   halfCandidateName,
+  fillTheFields,
   User,
+  UserRequire
 } from "../pom/recruitmentPage";
 import account from "../data/account.json";
 import { faker } from "@faker-js/faker";
 import ValidUser from "../data/fakeData";
-import { waitForElementVisible } from "../helpers/utils";
-import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+
+import { 
+  waitForElementVisible, 
+  elementShouldContainText, 
+  elementValueShouldContain, 
+  elementAttributeShouldContain,
+  elementShouldEmpty
+} from "./utils";
+
+import { format } from 'date-fns'
 import {
   createValidUser,
   createRequiredValidUser,
-  // createInvalidEMail,
-  // createInvalidDate,
 } from "../data/fakeData";
 export {
   LoginPage,
@@ -31,13 +40,19 @@ export {
   halfNameCombiner,
   halfCandidateName,
   account,
+  searchRecord,
   ValidUser,
   createValidUser,
   faker, 
   format, 
   getHiringName,
   waitForElementVisible, 
-  createRequiredValidUser
-  // createInvalidEMail,
-  // createInvalidDate,
+  createRequiredValidUser,
+  elementShouldContainText,
+  elementValueShouldContain,
+  elementAttributeShouldContain,
+  fillTheFields,
+  User,
+  UserRequire,
+  elementShouldEmpty
 };

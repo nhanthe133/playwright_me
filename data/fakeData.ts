@@ -1,23 +1,10 @@
 import { faker } from "@faker-js/faker";
 // import { format } from "path";
-import { format, formatDistance, formatRelative, subDays } from 'date-fns'
+import { format } from 'date-fns'
 // import { UserRequire } from "../pom/recruitmentPage";
 
 
 // Define the interfaces for the data types
-
-// export interface User {
-//   firstName: string;
-//   middleName: string;
-//   lastName: string;
-//   email: string;
-//   contactNumber: string;
-//   keywords: string;
-//   dateOfApp: string;
-//   fromDate: string;
-//   toDate: string;
-//   notes: string;
-// }
 export interface User {
   FirstName: string;
   MiddleName: string;
@@ -49,23 +36,23 @@ export function createValidUser(): User {
     from: "2024-08-07",
     to: "2024-08-08",
   })
-  const from = faker.date.between({
-    from: "2024-08-04T00:00:00.000Z",
-    to: "2024-08-07T00:00:00.000Z",
-  })
-  const to = faker.date
-      .between({
-        from: "2024-08-08T00:00:00.000Z",
-        to: "2024-08-10T00:00:00.000Z",
-      })
+  // const from = faker.date.between({
+  //   from: "2024-08-04T00:00:00.000Z",
+  //   to: "2024-08-07T00:00:00.000Z",
+  // })
+  // const to = faker.date
+  //     .between({
+  //       from: "2024-08-08T00:00:00.000Z",
+  //       to: "2024-08-10T00:00:00.000Z",
+  //     })
 
   // const dateOfApp = format(dateApp, 'yyyy-MM-dd');
   // const fromDate = format(from, 'yyyy-MM-dd');
   // const toDate = format(to, 'yyyy-MM-dd');
 
   const DateOfApp = format(dateApp, 'yyyy-MM-dd');
-  const FromDate = format(from, 'yyyy-MM-dd');
-  const ToDate = format(to, 'yyyy-MM-dd');
+  // const FromDate = format(from, 'yyyy-MM-dd');
+  // const ToDate = format(to, 'yyyy-MM-dd');
 
   // return {
   //   firstName: faker.person.firstName(),

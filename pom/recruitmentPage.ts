@@ -1,7 +1,6 @@
-import { Locator, Page, expect } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 import recruitmentPageLocator from "../locators/recruitmentPageLocator.json";
 import inputRecruitment from "../locators/inputRecruitment.json";
-import { waitForElementVisible } from "../helpers/utils";
 
 export type User = {
   FirstName: string;
@@ -26,8 +25,6 @@ export async function fillTheFields(user: User, page) {
     await page.locator(inputRecruitment[`input${prop}`]).fill(user[prop]);
   }
 }
-
-
 
 export function getFullNameRowLocator(fullName: string) {
   return `//div[contains(@class, "oxd-table-row") and contains(., "${fullName}")]`;
@@ -91,7 +88,7 @@ export function getDetailCandidateName(fullName: string) {
   // return `//div[@role="listbox"]//div[@role="option"]//span[text()="${fullName}"]`;
   return `//p[contains(@class, "oxd-text oxd-text--p") and text()="${fullName}"]`
 }
-export function getHiringName(hireName:any) {
+export function getHiringName(hireName) {
   return `//div/child::span[text()="${hireName}"]`
 }
 
@@ -127,11 +124,11 @@ export async function addRecord(page, recruitmentPage, ValidUser) {
 }
 
 export async function deleteRecord(
-  fullName: any, //for what? là nguyên liệu để tìm row
-  firstName: any, // nhập vào để nhận gợi ý.
+  fullName, //for what? là nguyên liệu để tìm row
+  firstName, // nhập vào để nhận gợi ý.
   candidateName, // đây là gợi ý
-  page: any,
-  recruitmentPage: any
+  page,
+  recruitmentPage
 ) {
   await recruitmentPage.recruitmentLink.click();
   await recruitmentPage.candidateField.click();
