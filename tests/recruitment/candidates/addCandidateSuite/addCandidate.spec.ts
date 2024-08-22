@@ -1,10 +1,5 @@
 import { test, expect } from "@playwright/test";
 import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
-import {
-  fillTheFields,
-  User,
-  UserRequire,
-} from "../../../../pom/recruitmentPage";
 
 let loginPage: RecruitmentResource.LoginPage;
 let recruitmentPage: RecruitmentResource.RecruitmentPage;
@@ -27,81 +22,45 @@ test("Showing Recruitment page when clicking on Recruitment button", async ({
   await expect(page).toHaveURL("/web/recruitment/viewCandidates");
   // await expect(recruitmentPage.recruitmentHeader).toBeVisible();
   expect(RecruitmentResource.waitForElementVisible(recruitmentPage.recruitmentHeader, 10000));
-  
 });
 
-test.describe("Add Candidate Suite", () => {
+test.describe("@AC Add Candidate Suite", () => {
   test.beforeEach(async ({ page }) => {
     recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
     await recruitmentPage.addButton.click();
   });
 
-  test("Add Candidate success when inputing all the field", async ({
+  test("Add Candidate success when inputting all the fields", async ({
     page,
   }) => {
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.vacancy.click();
     await recruitmentPage.vacancyName.click();
-
     const [fileChooser] = await Promise.all([
       page.waitForEvent("filechooser"),
       recruitmentPage.browseFile.click(),
     ]);
-
     await fileChooser.setFiles("files/correct.docx");
-
-    const fully: User = structuredClone(RecruitmentResource.ValidUser);
-
-    await fillTheFields(fully, page);
+    const fully: RecruitmentResource.User = structuredClone(RecruitmentResource.ValidUser);
+    await recruitmentPage.fillTheFields(fully);
     await recruitmentPage.submitAdd.click();
-
-    // await expect(recruitmentPage.successMessage).toBeVisible();
-  expect(RecruitmentResource.waitForElementVisible(recruitmentPage.successMessage, 10000));
-
-
+    await RecruitmentResource.waitForElementVisible(recruitmentPage.successMessage, 10000);
     await RecruitmentResource.waitForElementVisible(recruitmentPage.appStage, 10000);
-
-    const fullName = RecruitmentResource.fullNameCombiner(page, RecruitmentResource.ValidUser);
-    // const firstName = ValidUser.firstName;
-    const firstName = RecruitmentResource.ValidUser.FirstName;
-    const candidateName = RecruitmentResource.fullCandidateName(page, RecruitmentResource.ValidUser);
-    await RecruitmentResource.deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
-    );
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
   test("Add Candidate success when inputing required fields only", async ({
     page,
   }) => {
- 
+    
     const ValidRequireUser = RecruitmentResource.createRequiredValidUser();
-
-    const requiredFields: UserRequire = structuredClone(ValidRequireUser);
-
-    await fillTheFields(requiredFields, page);
-
+    const requiredFields: RecruitmentResource.UserRequire = structuredClone(ValidRequireUser);
+    await recruitmentPage.fillTheFields(requiredFields);
     await recruitmentPage.submitAdd.click();
-    // await expect(recruitmentPage.successMessage).toBeVisible();
-  expect(RecruitmentResource.waitForElementVisible(recruitmentPage.successMessage, 10000));
 
+    expect(RecruitmentResource.waitForElementVisible(recruitmentPage.successMessage, 10000));
     await RecruitmentResource.waitForElementVisible(recruitmentPage.appStage, 10000);
-    const fullName = RecruitmentResource.halfNameCombiner(page, ValidRequireUser);
-    // const firstName = ValidRequireUser.firstName;
-    const firstName = ValidRequireUser.FirstName;
-
-    const candidateName = RecruitmentResource.halfCandidateName(page, ValidRequireUser);
-
-    await RecruitmentResource.deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
-    );
+    await recruitmentPage.deleteRecord(ValidRequireUser);
   });
 
   test("Failed to add candidate when do not input required fields", async () => {
@@ -110,8 +69,6 @@ test.describe("Add Candidate Suite", () => {
     await RecruitmentResource.waitForElementVisible(recruitmentPage.errorFirstName, 10000);
     await RecruitmentResource.waitForElementVisible(recruitmentPage.errorLastName, 10000);
     await RecruitmentResource.waitForElementVisible(recruitmentPage.errorEmail, 10000);
-
-
   });
 
   test("Validation alert should be show when input invalid email address", async ({
@@ -160,7 +117,6 @@ test.describe("Add Candidate Suite", () => {
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.dateOfApp.fill(invalidDate);
     await recruitmentPage.submitAdd.click();
-    // await expect(recruitmentPage.errorDate).toBeVisible();
   await RecruitmentResource.waitForElementVisible(recruitmentPage.errorDate, 10000);
 
 
@@ -171,9 +127,6 @@ test.describe("Add Candidate Suite", () => {
   }) => {
     await recruitmentPage.cancelButton.click();
     await expect(page).toHaveURL("/web/recruitment/viewCandidates");
-    // await expect(recruitmentPage.recruitmentHeader).toBeVisible();
   await RecruitmentResource.waitForElementVisible(recruitmentPage.recruitmentHeader, 10000);
-
-
   });
 });

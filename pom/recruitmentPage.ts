@@ -1,7 +1,6 @@
 import { Page, expect } from "@playwright/test";
 import recruitmentPageLocator from "../locators/recruitmentPageLocator.json";
 import inputRecruitment from "../locators/inputRecruitment.json";
-
 export type User = {
   FirstName: string;
   LastName?: string;
@@ -19,146 +18,160 @@ export type UserRequire = {
   Email?: string;
 };
 
-
-export async function fillTheFields(user: User, page) {
-  for (let prop in user) {
-    await page.locator(inputRecruitment[`input${prop}`]).fill(user[prop]);
-  }
-}
-
-export function getFullNameRowLocator(fullName: string) {
-  return `//div[contains(@class, "oxd-table-row") and contains(., "${fullName}")]`;
-}
-export function getFullCandidateName(fullName: string) {
-  return `//div[contains(@class, "oxd-autocomplete-option")]/child::span[text()="${fullName}"]`;
-}
-export function getHalfCandidateName(halfName: string) {
-  return `//div[@role="listbox"]//div[@role="option"]//span[text()="${halfName}"]`;
-}
-
-// export function fullNameCombiner(page, ValidUser) {
-//   const firstName = ValidUser.firstName;
-//   const middleName = ValidUser.middleName ? `${ValidUser.middleName} ` : "";
-//   const lastName = ValidUser.lastName;
-//   const fullName = `${firstName} ${middleName}${lastName}`;
-//   return page.locator(getFullNameRowLocator(fullName));
-// }
-export function fullNameCombiner(page, ValidUser) {
-  const firstName = ValidUser.FirstName;
-  const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : "";
-  const lastName = ValidUser.LastName;
-  const fullName = `${firstName} ${middleName}${lastName}`;
-  return page.locator(getFullNameRowLocator(fullName));
-}
-export function halfNameCombiner(page, ValidUser) {
-  const firstName = ValidUser.FirstName;
-  const lastName = ValidUser.LastName;
-  const halfName = `${firstName}  ${lastName}`;
-  return page.locator(getFullNameRowLocator(halfName));
-}
-// export function fullCandidateName(page, ValidUser) {
-//   const firstName = ValidUser.firstName;
-//   const middleName = ValidUser.middleName ? `${ValidUser.middleName} ` : "";
-//   const lastName = ValidUser.lastName;
-//   const fullName = `${firstName} ${middleName}${lastName}`;
-//   return page.locator(getFullCandidateName(fullName));
-// }
-export function fullCandidateName(page, ValidUser) {
-  const firstName = ValidUser.FirstName;
-  const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : "";
-  const lastName = ValidUser.LastName;
-  const fullName = `${firstName} ${middleName}${lastName}`;
-  return page.locator(getFullCandidateName(fullName));
-}
-export function halfCandidateName(page, ValidUser) {
-  const firstName = ValidUser.FirstName;
-  const lastName = ValidUser.LastName;
-  const halfName = `${firstName}  ${lastName}`;
-  return page.locator(getHalfCandidateName(halfName));
-}
-
-export function detailCandidateName(page, ValidUser) {
-  const firstName = ValidUser.FirstName;
-  const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : "";
-  const lastName = ValidUser.LastName;
-  const fullName = `${firstName} ${middleName}${lastName}`;
-  return page.locator(getDetailCandidateName(fullName));
-}
-export function getDetailCandidateName(fullName: string) {
-  // return `//div[@role="listbox"]//div[@role="option"]//span[text()="${fullName}"]`;
-  return `//p[contains(@class, "oxd-text oxd-text--p") and text()="${fullName}"]`
-}
-export function getHiringName(hireName) {
-  return `//div/child::span[text()="${hireName}"]`
-}
-
-export async function addRecord(page, recruitmentPage, ValidUser) {
-  await recruitmentPage.recruitmentLink.click();
-  await recruitmentPage.addButton.click();
-  await recruitmentPage.dateOfApp.clear();
-  await recruitmentPage.vacancy.click();
-  await recruitmentPage.vacancyName.click();
-
-  const [fileChooser] = await Promise.all([
-    page.waitForEvent("filechooser"),
-    recruitmentPage.browseFile.click(),
-  ]);
-  await fileChooser.setFiles("files/correct.docx");
-
-  // const fully: User = {
-  //   FirstName: ValidUser.firstName,
-  //   LastName: ValidUser.lastName,
-  //   Email: ValidUser.email,
-  //   MiddleName: ValidUser.middleName,
-  //   ContactNumber: ValidUser.contactNumber,
-  //   Keywords: ValidUser.keywords,
-  //   DateOfApp: ValidUser.dateOfApp,
-  //   Notes: ValidUser.notes,
-  // };
-
-  const fully: User = structuredClone(ValidUser);
-
-
-  await fillTheFields(fully, page);
-  await recruitmentPage.submitAdd.click();
-}
-
-export async function deleteRecord(
-  fullName, //for what? là nguyên liệu để tìm row
-  firstName, // nhập vào để nhận gợi ý.
-  candidateName, // đây là gợi ý
-  page,
-  recruitmentPage
-) {
-  await recruitmentPage.recruitmentLink.click();
-  await recruitmentPage.candidateField.click();
-  await recruitmentPage.candidateField.fill(firstName); //fill first name
-  await candidateName.click(); // chọn gợi ý
-  await recruitmentPage.submitButton.click();
-  // await expect(fullName).toBeVisible();//?why
-  const rowName = fullName.locator(recruitmentPage.trashButton); // nấu locator cho rowname thùng rác
-  // await waitForElementVisible(rowName, 30000);
-  await rowName.click(); // nhấp vào thùng rác
-  await recruitmentPage.deleteButton.click();
-  await expect(recruitmentPage.successMessage).toBeVisible();
-}
-
-export async function searchRecord(ValidUser, page, recruitmentPage) {
-    const firstName = ValidUser.FirstName;
-    await recruitmentPage.recruitmentLink.click();
-    await recruitmentPage.candidateField.click();
-    await recruitmentPage.candidateField.fill(firstName); //fill first name
-    const candidateName = fullCandidateName(page, ValidUser);
-    await candidateName.click();
-    await recruitmentPage.submitButton.click();
-}
-
-
 export class RecruitmentPage {
   private page: Page;
   constructor(page: Page) {
     this.page = page;
   }
+
+  async clearCandidateInfo(){
+    const clears = [
+      this.inputFirstName,
+      this.inputMiddleName,
+      this.inputLastName,
+      this.inputEmail,
+      this.contactNumber,
+      this.keywords,
+      this.dateOfApp,
+      this.notes
+  ];
+  for (const clear of clears) {
+      await clear.clear();
+  }
+  }
+
+  async fillTheFields(user: User) {
+    for (let prop in user) {
+      await this.page.locator(inputRecruitment[`input${prop}`]).fill(user[prop]);
+    }
+  }
+  
+  getFullNameRowLocator(fullName: string) {
+    return `//div[contains(@class, "oxd-table-row") and contains(., "${fullName}")]`;
+  }
+  getFullCandidateName(fullName: string) {
+    return `//div[contains(@class, "oxd-autocomplete-option")]/child::span[text()="${fullName}"]`;
+  }
+  getHalfCandidateName(halfName: string) {
+    return `//div[@role="listbox"]//div[@role="option"]//span[text()="${halfName}"]`;
+  }
+  
+  fullNameCombiner(ValidUser) {
+    const firstName = ValidUser.FirstName;
+    const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : "";
+    const lastName = ValidUser.LastName;
+    const fullName = `${firstName} ${middleName}${lastName}`;
+    return this.page.locator(this.getFullNameRowLocator(fullName));
+  }
+  halfNameCombiner(ValidUser) {
+    const firstName = ValidUser.FirstName;
+    const lastName = ValidUser.LastName;
+    const halfName = `${firstName}  ${lastName}`;
+    return this.page.locator(this.getFullNameRowLocator(halfName));
+  }
+  
+  fullCandidateName(ValidUser) {
+    const firstName = ValidUser.FirstName;
+    const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : "";
+    const lastName = ValidUser.LastName;
+    const fullName = `${firstName} ${middleName}${lastName}`;
+    return this.page.locator(this.getFullCandidateName(fullName));
+  }
+  halfCandidateName(ValidUser) {
+    const firstName = ValidUser.FirstName;
+    const lastName = ValidUser.LastName;
+    const halfName = `${firstName}  ${lastName}`;
+    return this.page.locator(this.getHalfCandidateName(halfName));
+  }
+  
+  detailCandidateName(ValidUser) {
+    const firstName = ValidUser.FirstName;
+    const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : "";
+    const lastName = ValidUser.LastName;
+    const fullName = `${firstName} ${middleName}${lastName}`;
+    return this.page.locator(this.getDetailCandidateName(fullName));
+  }
+  getDetailCandidateName(fullName: string) {
+    // return `//div[@role="listbox"]//div[@role="option"]//span[text()="${fullName}"]`;
+    return `//p[contains(@class, "oxd-text oxd-text--p") and text()="${fullName}"]`
+  }
+  getHiringName(hireName) {
+    return `//div/child::span[text()="${hireName}"]`
+  }
+
+  // async deleteRecord(
+  //   ValidUser
+  // ) {
+  //   const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : " ";
+  //   const subname = `${ValidUser.FirstName} ${middleName}${ValidUser.LastName}`;
+  //   const candidateName = this.page.locator(this.getFullCandidateName(subname));
+  //   const fullName = this.page.locator(this.getFullNameRowLocator(subname));
+  //   await this.recruitmentLink.click();
+  //   await this.candidateField.click();
+  //   await this.candidateField.fill(ValidUser.FirstName); //fill first name
+  //   await candidateName.click(); // chọn gợi ý
+  //   await this.submitButton.click();
+  //   const rowName = fullName.locator(this.trashButton); // nấu locator cho rowname thùng rác
+  //   await rowName.click(); // nhấp vào thùng rác
+  //   await this.deleteButton.click();
+  //   await expect(this.successMessage).toBeVisible();
+  // }
+  async deleteRecord(
+    ValidUser
+  ) {
+    const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : " ";
+    const subname = `${ValidUser.FirstName} ${middleName}${ValidUser.LastName}`;
+    const candidateName = this.page.locator(this.getFullCandidateName(subname));
+    const fullName = this.page.locator(this.getFullNameRowLocator(subname));
+    await this.recruitmentLink.click();
+    await this.candidateField.click();
+    await this.candidateField.fill(ValidUser.FirstName); //fill first name
+    await candidateName.nth(0).click(); // chọn gợi ý
+    // await this.submitButton.click();
+    const rowName = fullName.locator(this.trashButton);
+    const rowNames = await rowName.count();  // nấu locator cho rowname thùng rác
+    for(let i = 0; i < rowNames; i++){
+        // const rowName = fullName.locator(this.trashButton); // nấu locator cho rowname thùng rác
+        await this.candidateField.click();
+        await this.candidateField.clear();
+        await this.candidateField.fill(ValidUser.FirstName); //fill first name
+        await candidateName.nth(0).click();
+        await this.submitButton.click();
+        await rowName.nth(0).click(); // nhấp vào thùng rác
+        await this.deleteButton.click();
+        await expect(this.successMessage).toBeVisible();
+    }
+  }
+
+
+    async searchRecord(ValidUser) {
+    const firstName = ValidUser.FirstName;
+    await this.recruitmentLink.click();
+    await this.candidateField.click();
+    await this.candidateField.fill(firstName); //fill first name
+    const candidateName = this.fullCandidateName(ValidUser);
+    await candidateName.click();
+    await this.submitButton.click();
+}
+
+  async addRecord(ValidUser) {
+  await this.recruitmentLink.click();
+  await this.addButton.click();
+  await this.dateOfApp.clear();
+  await this.vacancy.click();
+  await this.vacancyName.click();
+  const [fileChooser] = await Promise.all([
+    this.page.waitForEvent("filechooser"),
+    this.browseFile.click(),
+  ]);
+  await fileChooser.setFiles("files/correct.docx");
+  const fully: User = structuredClone(ValidUser);
+  await this.fillTheFields(fully);
+  await this.submitAdd.click();
+}
+
+    
+
   get ultimateDelete() {
     return this.page.locator(recruitmentPageLocator.ultimateDelete);
   }

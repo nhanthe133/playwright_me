@@ -3,25 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "runalltest": "npx playwright test --headed --project=chromium",
-    "testfile": "npx playwright test --headed --project=chromium",
-    "testtitle": "npx playwright test --headed --project=chromium -g",
-    "testheaded": "npx playwright test --headed --project=chromium",
-    "testchromium": "npx playwright test --project=chromium",
-    "testchromium:headed": "npx playwright test --project=chromium --headed",
-    "testfirefox": "npx playwright test --project=firefox",
-    "testfirefox:headed": "npx playwright --project=firefox --headed test",
-    "testwebkit": "npx playwright test --project=webkit",
-    "testwebkit:headed": "npx playwright test --project=webkit --headed",
-    "allsearchcandidate": "npx playwright test recruitment/candidates/searchCandidateSuite/searchCandidate --headed --project=chromium",
-    "alladdcandidate": "npx playwright test recruitment/candidates/addCandidateSuite/addCandidate --headed --project=chromium",
-    "addcandidate": "npx playwright test recruitment/candidates/addCandidateSuite/addCandidate --headed --project=chromium -g",
-    "searchcandidate": "npx playwright test recruitment/candidates/searchCandidateSuite/searchCandidate --headed --project=chromium -g",
-    "detailcandidate": "npx playwright test recruitment/candidates/detailCandidateSuite/detailCandidate --headed --project=chromium -g",
-    "editcandidate": "npx playwright test recruitment/candidates/editCandidateSuite/editCandidate --headed --project=chromium -g",
-    "deletecandidate": "npx playwright test recruitment/candidates/deleteCandidateSuite/deleteCandidate --headed --project=chromium -g"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -32,10 +14,27 @@
     "@types/node": "^22.0.2",
     "eslint": "^9.9.0",
     "globals": "^15.9.0",
+    "husky": "^9.1.5",
     "lint": "^0.8.19",
+    "lint-staged": "^15.2.9",
     "typescript-eslint": "^8.2.0"
   },
   "dependencies": {
-    "date-fns": "^3.6.0"
+    "chalk": "^5.3.0",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
+    "lowdb": "^7.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.ts": [
+      "tsc --noEmit",
+      "eslint --fix"
+    ]
   }
+  
 }

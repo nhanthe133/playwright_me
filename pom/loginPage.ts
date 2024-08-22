@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import loginPageLocator from "../locators/loginPageLocator.json";
 import { pressKeyOnLocator } from "../helpers/utils";
+import * as RecruitmentResource from "../helpers/recruitmentResource";
 export class LoginPage {
   private page: Page;
 
@@ -19,7 +20,6 @@ export class LoginPage {
       await this.submitButton.click();
     }
   }
-
   async pressKeyOnLocator(
     locator: Locator | string,
     key: string,
