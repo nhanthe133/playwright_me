@@ -57,3 +57,13 @@ export async function elementShouldEmpty(
 ): Promise<void> {
   await expect(locator).toBeEmpty({timeout});
 }
+
+export function addDays(date, days) {
+  let result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+export function subtractDays(date, days) {
+  return addDays(date, -days);
+}

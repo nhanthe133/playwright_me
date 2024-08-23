@@ -162,14 +162,18 @@ test.describe("@SC Candidate Searching Suite", () => {
     await recruitmentPage.addRecord(ValidUser);
     await recruitmentPage.recruitmentLink.click();
 
-    const from = RecruitmentResource.faker.date.between({
-      from: "2024-08-04T00:00:00.000Z",
-      to: "2024-08-07T00:00:00.000Z",
-    });
-    const to = RecruitmentResource.faker.date.between({
-      from: "2024-08-08T00:00:00.000Z",
-      to: "2024-08-10T00:00:00.000Z",
-    });
+    // const from = RecruitmentResource.faker.date.between({
+    //   from: "2024-08-04T00:00:00.000Z",
+    //   to: "2024-08-07T00:00:00.000Z",
+    // });
+    let now = RecruitmentResource.faker.date.recent();
+    let from = RecruitmentResource.subtractDays(now, 5);
+    // const to = RecruitmentResource.faker.date.between({
+    //   from: "2024-08-08T00:00:00.000Z",
+    //   to: "2024-08-10T00:00:00.000Z",
+    // });
+    let to = RecruitmentResource.addDays(now, 5);
+    
 
     const FromDate = RecruitmentResource.format(from, "yyyy-MM-dd");
     const ToDate = RecruitmentResource.format(to, "yyyy-MM-dd");

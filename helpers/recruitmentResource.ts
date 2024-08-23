@@ -13,7 +13,9 @@ import {
   elementShouldContainText, 
   elementValueShouldContain, 
   elementAttributeShouldContain,
-  elementShouldEmpty
+  elementShouldEmpty,
+  addDays,
+  subtractDays
 } from "./utils";
 
 import { format } from 'date-fns'
@@ -37,4 +39,6 @@ export {
   User,
   UserRequire,
   elementShouldEmpty,
+  addDays,
+  subtractDays
 };

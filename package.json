@@ -17,6 +17,7 @@
     "husky": "^9.1.5",
     "lint": "^0.8.19",
     "lint-staged": "^15.2.9",
+    "pre-commit": "^1.2.2",
     "typescript-eslint": "^8.2.0"
   },
   "dependencies": {
@@ -25,6 +26,10 @@
     "dotenv": "^16.4.5",
     "lowdb": "^7.0.1"
   },
+  "pre-commit": [  
+    "lint",  
+    "test"  
+  ],  
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -36,5 +41,4 @@
       "eslint --fix"
     ]
   }
-  
 }

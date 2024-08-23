@@ -6,14 +6,21 @@ const args = process.argv;
 
 // console.log(process.argv)
 
+// var runCommand = `
+// npx playwright test \
+// __RUNOPS__ \
+// --headed \
+// --project=chromium
+// `;
+
 var runCommand = `
 npx playwright test \
 __RUNOPS__ \
 --headed \
 --project=chromium
 `;
+
 //my custom
-var running = `npx playwright test`;
 
 switch (args[2].toLowerCase()) {
   case "--testcase":
@@ -22,8 +29,10 @@ switch (args[2].toLowerCase()) {
   case "--options":
     runOpts = args[3];
     break;
-  
-  
+  case "--headless":
+    runOpts = args[3];
+    runCommand = runCommand.replace("--headed", '');
+    break;
 }
 // TESTCASE=process.env.TESTCASE
 
@@ -36,4 +45,5 @@ switch (args[2].toLowerCase()) {
 // runOpts = `-g "${SPLITED.join("|")}"`;
 
 runCommand = runCommand.replace("__RUNOPS__", runOpts);
+// runCommand = runCommand.replace("--headed ", mode);
 fs.writeFileSync("run_cmd.sh", runCommand);
