@@ -1,4 +1,3 @@
-TODO
 import { test, expect } from "@playwright/test";
 import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
 
