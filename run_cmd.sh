@@ -1,2 +1,2 @@
 
-npx playwright test -g "Filter candidates by fill all the fields" --retries=3 --headed --project=chromium
+npx playwright test -g "Application Stage and Candidate Profile should be display corresponding data" --headed --project=chromium

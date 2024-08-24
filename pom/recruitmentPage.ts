@@ -1,5 +1,6 @@
 import { Page, expect } from "@playwright/test";
 import recruitmentPageLocator from "../locators/recruitmentPageLocator.json";
+import loginPageLocator from "../locators/loginPageLocator.json";
 import inputRecruitment from "../locators/inputRecruitment.json";
 export type User = {
   FirstName: string;
@@ -41,7 +42,7 @@ export class RecruitmentPage {
   }
 
   async fillTheFields(user: User) {
-    for (let prop in user) {
+    for (const prop in user) {
       await this.page.locator(inputRecruitment[`input${prop}`]).fill(user[prop]);
     }
   }
@@ -116,6 +117,20 @@ export class RecruitmentPage {
   //   await this.deleteButton.click();
   //   await expect(this.successMessage).toBeVisible();
   // }
+
+  async clickCheckboxes(users) {
+    for (const user of users) {
+        const fullName = this.fullNameCombiner(user);
+        const rowName = fullName.locator(this.checkBox); // nấu locator cho rowname checkbox
+        await rowName.click(); // nhấp vào checkbox
+    }
+}
+    async clickNFill(object, firstName) {
+      await object.click();
+      await object.fill(firstName);
+    }
+
+  
   async deleteRecord(
     ValidUser
   ) {
@@ -351,5 +366,14 @@ export class RecruitmentPage {
   }
   get trashBin() {
     return this.page.locator(recruitmentPageLocator.trashBin);
+  }
+  get inputUsername() {
+    return this.page.locator(loginPageLocator.inputUsername);
+  }
+  get inputPassword() {
+    return this.page.locator(loginPageLocator.inputPassword);
+  }
+  get loginButton() {
+    return this.page.locator(loginPageLocator.submitButton);
   }
 }

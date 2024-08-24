@@ -1,5 +1,4 @@
-import { test, expect} from "@playwright/test";
-// import { format, formatDistance, formatRelative, subDays } from "date-fns";
+import { test, expect } from "@playwright/test";
 import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
 
 let loginPage: RecruitmentResource.LoginPage;
@@ -9,318 +8,254 @@ test.beforeEach(async ({ page }) => {
   loginPage = new RecruitmentResource.LoginPage(page);
   recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
-  // login
   await loginPage.login(
     RecruitmentResource.account.adminAccount.username,
     RecruitmentResource.account.adminAccount.password
   );
-  // vao recruitmentLink
-  // lí do không để hàm tạo user trong đây dù nó lặp lại trong mỗi test vì nó trùng tên và gây ra vài side problem
+  await recruitmentPage.addRecord(RecruitmentResource.ValidUser);
+  await recruitmentPage.recruitmentLink.click();
 });
 
 test.describe("@SC Candidate Searching Suite", () => {
-  test("Filter candidates by Job Title", async ({ page }) => {
-    // const vacancy =
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
+  test("@SC1 Filter candidates by Job Title", async () => {
     await recruitmentPage.jobTitle.click();
     await recruitmentPage.jobTitleName.click();
     await recruitmentPage.submitButton.click();
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-
-  test("Filter candidates by Vacancy", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
+  test("@SC2 Filter candidates by Vacancy", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     await recruitmentPage.vacancy.click();
     await recruitmentPage.vacancyName.click();
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Filter candidates by Hiring Manager", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
-
+  test("@SC3 Filter candidates by Hiring Manager", async ({ page }) => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     const hireName = await recruitmentPage.hireName.textContent();
     const hiringName = recruitmentPage.getHiringName(hireName);
     await recruitmentPage.hiring.click();
     await page.locator(hiringName).click();
-
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Filter candidates by Status", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
+  test("@SC4 Filter candidates by Status", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     await recruitmentPage.status.click();
     await recruitmentPage.statusName.click();
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("Filter candidates by Candidate Name", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = recruitmentPage.fullCandidateName(ValidUser);
+  test("@SC5 Filter candidates by Candidate Name", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = recruitmentPage.fullCandidateName(
+      RecruitmentResource.ValidUser
+    );
     await recruitmentPage.candidateField.click();
     await recruitmentPage.candidateField.fill(firstName); //fill first name
     await candidateName.click();
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Filter candidates by Keywords", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
+  test("@SC6 Filter candidates by Keywords", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     await recruitmentPage.keywords.click();
-    const keyWords = ValidUser.Keywords;
+    const keyWords = RecruitmentResource.ValidUser.Keywords;
     await recruitmentPage.keywords.fill(keyWords);
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Filter candidates by From Date", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-    const from = RecruitmentResource.faker.date.between({
-      from: "2024-08-04T00:00:00.000Z",
-      to: "2024-08-07T00:00:00.000Z",
-    });
-
+  test("@SC7 Filter candidates by From Date", async () => {
+    const now = RecruitmentResource.faker.date.recent();
+    const from = RecruitmentResource.subtractDays(now, 5);
     const FromDate = RecruitmentResource.format(from, "yyyy-MM-dd");
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     await recruitmentPage.from.click();
     await recruitmentPage.from.fill(FromDate);
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Filter candidates by To Date", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
-    const to = RecruitmentResource.faker.date.between({
-      from: "2024-08-08T00:00:00.000Z",
-      to: "2024-08-10T00:00:00.000Z",
-    });
-
+  test("@SC8 Filter candidates by To Date", async () => {
+    const now = RecruitmentResource.faker.date.recent();
+    const to = RecruitmentResource.addDays(now, 5);
     const ToDate = RecruitmentResource.format(to, "yyyy-MM-dd");
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
-    // const formattedTo = ValidUser.ToDate.split("T")[0];
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     await recruitmentPage.to.click();
     await recruitmentPage.to.fill(ToDate);
     await recruitmentPage.to.click();
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Filter candidates by Method of Application", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
+  test("@SC9 Filter candidates by Method of Application", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     await recruitmentPage.method.click();
     await recruitmentPage.methodName.click();
     await recruitmentPage.submitButton.click();
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Filter candidates by fill all the fields", async ({ page }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
-    // const from = RecruitmentResource.faker.date.between({
-    //   from: "2024-08-04T00:00:00.000Z",
-    //   to: "2024-08-07T00:00:00.000Z",
-    // });
-    let now = RecruitmentResource.faker.date.recent();
-    let from = RecruitmentResource.subtractDays(now, 5);
-    // const to = RecruitmentResource.faker.date.between({
-    //   from: "2024-08-08T00:00:00.000Z",
-    //   to: "2024-08-10T00:00:00.000Z",
-    // });
-    let to = RecruitmentResource.addDays(now, 5);
-    
-
+  test("@SC10 Filter candidates by fill all the fields", async ({ page }) => {
+    const now = RecruitmentResource.faker.date.recent();
+    const from = RecruitmentResource.subtractDays(now, 5);
+    const to = RecruitmentResource.addDays(now, 5);
     const FromDate = RecruitmentResource.format(from, "yyyy-MM-dd");
     const ToDate = RecruitmentResource.format(to, "yyyy-MM-dd");
-
-    const fullName = recruitmentPage.fullNameCombiner(ValidUser);
-    const firstName = ValidUser.FirstName;
-    const candidateName = recruitmentPage.fullCandidateName(ValidUser);
-    // const formattedFrom = ValidUser.FromDate.split("T")[0];
-    // const formattedTo = ValidUser.ToDate.split("T")[0];
-
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = recruitmentPage.fullCandidateName(
+      RecruitmentResource.ValidUser
+    );
+    const keyWords = RecruitmentResource.ValidUser.Keywords;
     await recruitmentPage.jobTitle.click();
     await recruitmentPage.jobTitleName.click();
-
     await recruitmentPage.vacancy.click();
     await recruitmentPage.vacancyName.click();
-
     const hireName = await recruitmentPage.hireName.textContent();
     const hiringName = recruitmentPage.getHiringName(hireName);
     await recruitmentPage.hiring.click();
     await page.locator(hiringName).click();
-
     await recruitmentPage.status.click();
     await recruitmentPage.statusName.click();
-
-    await recruitmentPage.candidateField.click();
-    await recruitmentPage.candidateField.fill(firstName); //fill first name
+    await recruitmentPage.clickNFill(recruitmentPage.candidateField, firstName);
     await candidateName.click();
-
-    await recruitmentPage.keywords.click();
-    const keyWords = ValidUser.Keywords;
-    await recruitmentPage.keywords.fill(keyWords);
-
-    await recruitmentPage.from.click();
-    await recruitmentPage.from.fill(FromDate);
-
-    await recruitmentPage.to.click();
-    await recruitmentPage.to.fill(ToDate);
-
+    await recruitmentPage.clickNFill(recruitmentPage.keywords, keyWords);
+    await recruitmentPage.clickNFill(recruitmentPage.from, FromDate);
+    await recruitmentPage.clickNFill(recruitmentPage.to, ToDate);
     await recruitmentPage.method.click();
     await recruitmentPage.methodName.click();
     await recruitmentPage.submitButton.click();
-
     await RecruitmentResource.waitForElementVisible(fullName, 10000);
-
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("Reset options to default when clicking reset button", async ({
-    page,
-  }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-    const from = RecruitmentResource.faker.date.between({
-      from: "2024-08-04T00:00:00.000Z",
-      to: "2024-08-07T00:00:00.000Z",
-    });
-    const to = RecruitmentResource.faker.date.between({
-      from: "2024-08-08T00:00:00.000Z",
-      to: "2024-08-10T00:00:00.000Z",
-    });
-
+  test("@SC11 Reset options to default when clicking reset button", async () => {
+    const now = RecruitmentResource.faker.date.recent();
+    const from = RecruitmentResource.subtractDays(now, 5);
+    const to = RecruitmentResource.addDays(now, 5);
     const FromDate = RecruitmentResource.format(from, "yyyy-MM-dd");
     const ToDate = RecruitmentResource.format(to, "yyyy-MM-dd");
-
-    const firstName = ValidUser.FirstName;
-    const candidateName = recruitmentPage.fullCandidateName(ValidUser);
-    // const formattedFrom = FromDate.split("T")[0];
-    // const formattedTo = ToDate.split("T")[0];
-    const keyWords = ValidUser.Keywords;
-
+    const firstName = RecruitmentResource.ValidUser.FirstName;
+    const candidateName = recruitmentPage.fullCandidateName(
+      RecruitmentResource.ValidUser
+    );
+    const keyWords = RecruitmentResource.ValidUser.Keywords;
     await recruitmentPage.jobTitle.click();
     await recruitmentPage.jobTitleName.click();
     await recruitmentPage.vacancy.click();
     await recruitmentPage.vacancyName.click();
     await recruitmentPage.status.click();
     await recruitmentPage.statusName.click();
-    await recruitmentPage.candidateField.click();
-    await recruitmentPage.candidateField.fill(firstName); //fill first name
+    await recruitmentPage.clickNFill(recruitmentPage.candidateField, firstName); //fill first name
     await candidateName.click();
-    await recruitmentPage.keywords.click();
-    await recruitmentPage.keywords.fill(keyWords);
-    await recruitmentPage.from.click();
-    await recruitmentPage.from.fill(FromDate);
-    await recruitmentPage.to.click();
-    await recruitmentPage.to.fill(ToDate);
+    await recruitmentPage.clickNFill(recruitmentPage.keywords, keyWords);
+    await recruitmentPage.clickNFill(recruitmentPage.from, FromDate);
+    await recruitmentPage.clickNFill(recruitmentPage.to, ToDate);
     await recruitmentPage.method.click();
     await recruitmentPage.methodName.click();
     await recruitmentPage.resetButton.click();
-
-    await RecruitmentResource.elementShouldContainText(recruitmentPage.jobTitle, "-- Select --", 15000);
-    await RecruitmentResource.elementShouldContainText(recruitmentPage.vacancy, "-- Select --", 15000);
-    await RecruitmentResource.elementShouldContainText(recruitmentPage.status, "-- Select --", 15000);
-    await RecruitmentResource.elementShouldContainText(recruitmentPage.method, "-- Select --", 15000);
-
-    // await expect(recruitmentPage.candidateField).toBeEmpty();
-    await RecruitmentResource.elementShouldEmpty(recruitmentPage.candidateField, 15000);
-    // await expect(recruitmentPage.keywords).toBeEmpty();
-    await RecruitmentResource.elementShouldEmpty(recruitmentPage.keywords, 15000);
-    // await expect(recruitmentPage.from).toBeEmpty();
+    await RecruitmentResource.elementShouldContainText(
+      recruitmentPage.jobTitle,
+      "-- Select --",
+      15000
+    );
+    await RecruitmentResource.elementShouldContainText(
+      recruitmentPage.vacancy,
+      "-- Select --",
+      15000
+    );
+    await RecruitmentResource.elementShouldContainText(
+      recruitmentPage.status,
+      "-- Select --",
+      15000
+    );
+    await RecruitmentResource.elementShouldContainText(
+      recruitmentPage.method,
+      "-- Select --",
+      15000
+    );
+    await RecruitmentResource.elementShouldEmpty(
+      recruitmentPage.candidateField,
+      15000
+    );
+    await RecruitmentResource.elementShouldEmpty(
+      recruitmentPage.keywords,
+      15000
+    );
     await RecruitmentResource.elementShouldEmpty(recruitmentPage.from, 15000);
-    // await expect(recruitmentPage.to).toBeEmpty();
     await RecruitmentResource.elementShouldEmpty(recruitmentPage.to, 15000);
-
-    await recruitmentPage.deleteRecord(ValidUser);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("The Candidates form should be collapse when clicking the up caret button", async ({
-    page,
-  }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
+  test("@SC12 The Candidates form should be collapse when clicking the up caret button", async () => {
     await recruitmentPage.caretButton.click();
-
-    await expect(recruitmentPage.jobTitle).toBeHidden();
-    await expect(recruitmentPage.vacancy).toBeHidden();
-    await expect(recruitmentPage.status).toBeHidden();
-    await expect(recruitmentPage.method).toBeHidden();
-    await expect(recruitmentPage.candidateField).toBeHidden();
-    await expect(recruitmentPage.keywords).toBeHidden();
-    await expect(recruitmentPage.from).toBeHidden();
-    await expect(recruitmentPage.to).toBeHidden();
-
-    await recruitmentPage.deleteRecord(ValidUser);
+    const elementsToCheck = [
+      recruitmentPage.jobTitle,
+      recruitmentPage.vacancy,
+      recruitmentPage.status,
+      recruitmentPage.method,
+      recruitmentPage.candidateField,
+      recruitmentPage.keywords,
+      recruitmentPage.from,
+      recruitmentPage.to,
+    ];
+    for (const element of elementsToCheck) {
+      await expect(element).toBeHidden();
+    }
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-
-  test("The Candidates form should be shown when clicking the down caret button", async ({
-    page,
-  }) => {
-    const ValidUser = RecruitmentResource.createValidUser();
-    await recruitmentPage.addRecord(ValidUser);
-    await recruitmentPage.recruitmentLink.click();
-
+  test("@SC13 The Candidates form should be shown when clicking the down caret button", async () => {
     await recruitmentPage.caretButton.click();
     await recruitmentPage.caretButton.click();
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.jobTitle, 10000);
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.vacancy, 10000);
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.status, 10000);
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.method, 10000);
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.candidateField, 10000);
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.keywords, 10000);
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.from, 10000);
-    await RecruitmentResource.waitForElementVisible(recruitmentPage.to, 10000);
-
-    await recruitmentPage.deleteRecord(ValidUser);
-
+    const elements = [
+      recruitmentPage.jobTitle,
+      recruitmentPage.vacancy,
+      recruitmentPage.status,
+      recruitmentPage.method,
+      recruitmentPage.candidateField,
+      recruitmentPage.keywords,
+      recruitmentPage.from,
+      recruitmentPage.to,
+    ];
+    for (const element of elements) {
+      await RecruitmentResource.waitForElementVisible(element, 10000);
+    }
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 });
