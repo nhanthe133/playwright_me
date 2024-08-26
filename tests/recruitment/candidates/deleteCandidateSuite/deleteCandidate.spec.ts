@@ -1,114 +1,91 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test } from "@playwright/test";
+import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
+let recruitmentPage: RecruitmentResource.RecruitmentPage;
+import { LoginPage } from "../../../../pom/loginPage";
+let loginPage: LoginPage;
 
-import {
-  LoginPage,
-  RecruitmentPage,
-  addRecord,
-  deleteRecord,
-  fullNameCombiner,
-  fullCandidateName,
-  account,
-  ValidUser,
-  getHiringName,
-  createValidUser,
-} from "../../../../helpers/importRecruitment";
-import { searchRecord } from "../../../../pom/recruitmentPage";
-
-var loginPage: LoginPage;
-var recruitmentPage: RecruitmentPage;
 test.beforeEach(async ({ page }) => {
   loginPage = new LoginPage(page);
-  recruitmentPage = new RecruitmentPage(page);
+  recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
+
   await loginPage.login(
-    account.adminAccount.username,
-    account.adminAccount.password
+    RecruitmentResource.account.adminAccount.username,
+    RecruitmentResource.account.adminAccount.password
   );
-  await addRecord(page, recruitmentPage, ValidUser);
+
+
+  await recruitmentPage.addRecord(RecruitmentResource.ValidUser);
   await recruitmentPage.recruitmentLink.click();
-  await searchRecord(ValidUser, page, recruitmentPage);
+  await recruitmentPage.searchRecord(RecruitmentResource.ValidUser);
 });
 
-test.describe("Delete Candidate Suite", () => {
-  test("User can cancel delete record", async ({ page }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
+test.describe("@XC Delete Candidate Suite", () => {
+  test("@XC01 User can cancel delete record", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     const rowName = fullName.locator(recruitmentPage.trashButton);
     await rowName.click();
     await recruitmentPage.cancelDelete.click();
-    await expect(fullName).toBeVisible();
-
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
-    );
-    await expect(recruitmentPage.successMessage).toBeVisible();
+    await loginPage.waitForElementVisible(fullName, 10000);
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("User can cancel delete multiple records", async ({ page }) => {
-    const editUser = createValidUser();
-    await addRecord(page, recruitmentPage, editUser);
+  test("@XC02 User can cancel delete multiple records", async ({ page }) => {
+    const editUser = RecruitmentResource.createValidUser();
+    await recruitmentPage.addRecord(editUser);
     await recruitmentPage.recruitmentLink.click();
-
     const hireName = await recruitmentPage.hireName.textContent();
-    const hiringName = getHiringName(hireName);
+    const hiringName = recruitmentPage.getHiringName(hireName);
     await recruitmentPage.hiring.click();
     await page.locator(hiringName).click();
-
     await recruitmentPage.submitButton.click();
-
-    const fullNameOne = fullNameCombiner(page, ValidUser);
-    const rowNameOne = fullNameOne.locator(recruitmentPage.checkBox); // nấu locator cho rowname checkbox
-    await rowNameOne.click(); // nhấp vào checkbox
-
-    const fullNameTwo = fullNameCombiner(page, editUser);
-    const rowNameTwo = fullNameTwo.locator(recruitmentPage.checkBox);
-    await rowNameTwo.click(); // nhấp vào checkbox
-
+    const users = [RecruitmentResource.ValidUser, editUser];
+    await recruitmentPage.clickCheckboxes(users);
     await recruitmentPage.deleteSelected.click();
     await recruitmentPage.cancelDelete.click();
-    await expect(fullNameOne).toBeVisible();
-    await expect(fullNameTwo).toBeVisible();
-
+    for (const user of users) {
+      const fullName = recruitmentPage.fullNameCombiner(user);
+      await loginPage.waitForElementVisible(fullName, 10000);
+    }
     await recruitmentPage.deleteSelected.click();
     await recruitmentPage.ultimateDelete.click();
-    await expect(recruitmentPage.successMessage).toBeVisible();
+    await loginPage.waitForElementVisible(
+      recruitmentPage.successMessage,
+      10000
+    );
   });
-
-  test("User can delete multiple records", async ({ page }) => {
-    const editUser = createValidUser();
-    await addRecord(page, recruitmentPage, editUser);
+  test("@XC03 User can delete multiple records", async ({ page }) => {
+    const editUser = RecruitmentResource.createValidUser();
+    await recruitmentPage.addRecord(editUser);
     await recruitmentPage.recruitmentLink.click();
-
     const hireName = await recruitmentPage.hireName.textContent();
-    const hiringName = getHiringName(hireName);
+    const hiringName = recruitmentPage.getHiringName(hireName);
     await recruitmentPage.hiring.click();
     await page.locator(hiringName).click();
-
     await recruitmentPage.submitButton.click();
-
-    const fullNameOne = fullNameCombiner(page, ValidUser);
-    const rowNameOne = fullNameOne.locator(recruitmentPage.checkBox);
-    await rowNameOne.click();
-
-    const fullNameTwo = fullNameCombiner(page, editUser);
-    const rowNameTwo = fullNameTwo.locator(recruitmentPage.checkBox);
-    await rowNameTwo.click();
-
+    const users = [RecruitmentResource.ValidUser, editUser];
+    await recruitmentPage.clickCheckboxes(users);
+    await page.waitForTimeout(5000);
     await recruitmentPage.deleteSelected.click();
     await recruitmentPage.ultimateDelete.click();
-    await expect(recruitmentPage.successMessage).toBeVisible();
+    await loginPage.waitForElementVisible(
+      recruitmentPage.successMessage,
+      10000
+    );
   });
 
-  test("User can delete one record", async ({ page }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
+  test("@XC04 User can delete one record", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     const rowName = fullName.locator(recruitmentPage.trashButton);
     await rowName.click(); // nhấp vào thùng rác
     await recruitmentPage.ultimateDelete.click();
-    await expect(recruitmentPage.successMessage).toBeVisible();
+    await loginPage.waitForElementVisible(
+      recruitmentPage.successMessage,
+      10000
+    );
   });
 });

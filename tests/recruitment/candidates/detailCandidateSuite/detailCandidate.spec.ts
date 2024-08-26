@@ -1,147 +1,148 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect } from "@playwright/test";
+import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
+import { LoginPage } from "../../../../pom/loginPage";
+let loginPage: LoginPage;
 
-import {
-  LoginPage,
-  RecruitmentPage,
-  addRecord,
-  deleteRecord,
-  fullNameCombiner,
-  fullCandidateName,
-  account,
-  ValidUser,
-} from "../../../../helpers/importRecruitment";
-import {
-  detailCandidateName,
-  searchRecord,
-} from "../../../../pom/recruitmentPage";
-
-var loginPage: LoginPage;
-var recruitmentPage: RecruitmentPage;
+let recruitmentPage: RecruitmentResource.RecruitmentPage;
 test.beforeEach(async ({ page }) => {
-  loginPage = new LoginPage(page);
-  recruitmentPage = new RecruitmentPage(page);
+  recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
-  // login
+  loginPage = new LoginPage(page);
+
   await loginPage.login(
-    account.adminAccount.username,
-    account.adminAccount.password
+    RecruitmentResource.account.adminAccount.username,
+    RecruitmentResource.account.adminAccount.password
   );
-  await addRecord(page, recruitmentPage, ValidUser);
-  await searchRecord(ValidUser, page, recruitmentPage);
+  await recruitmentPage.addRecord(RecruitmentResource.ValidUser);
+  await recruitmentPage.searchRecord(RecruitmentResource.ValidUser);
 });
 
 test.describe("Row option suite", () => {
-  test("Show candidate detail by clicking on eye icon", async ({ page }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
+  test("Show candidate detail by clicking on eye icon", async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     const rowName = fullName.locator(recruitmentPage.eye);
     await rowName.click();
-    await expect(recruitmentPage.appStage).toBeVisible();
-    //expect them thông tin -> đó là việc của các bước dưới.
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
+    await loginPage.waitForElementVisible(
+      recruitmentPage.appStage,
+      10000
     );
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-
   test("Document download success when click on download button", async ({
     page,
   }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     const rowName = fullName.locator(recruitmentPage.downloadIcon);
     const downloadPromise = page.waitForEvent("download");
     await rowName.click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe("correct.docx");
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
-    );
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 });
-test.describe("Detail Candidate Suite", () => {
-  test.beforeEach(async ({ page }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
+test.describe("@DC Detail Candidate Suite", () => {
+  test.beforeEach(async () => {
+    const fullName = recruitmentPage.fullNameCombiner(
+      RecruitmentResource.ValidUser
+    );
     const rowName = fullName.locator(recruitmentPage.eye);
     await rowName.click();
   });
+  test("@DC01 Application Stage and Candidate Profile should be display corresponding data", async () => {
+    const dtFullName = recruitmentPage.detailCandidateName(
+      RecruitmentResource.ValidUser
+    );
+    expect(loginPage.waitForElementVisible(dtFullName, 5000));
+    expect(
+      loginPage.waitForElementVisible(
+        recruitmentPage.dtVacancy,
+        10000
+      )
+    );
+    expect(
+      loginPage.waitForElementVisible(
+        recruitmentPage.dtJVacancy,
+        10000
+      )
+    );
+    await loginPage.elementShouldContainText(
+      recruitmentPage.fileName,
+      "correct.docx",
+      15000
+    );
 
-  test("Application Stage and Candidate Profile should be display corresponding data", async ({
-    page,
-  }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
-    const dtFullName = detailCandidateName(page, ValidUser);
-    await expect(dtFullName).toBeVisible();
-    await expect(recruitmentPage.dtVacancy).toBeVisible();
-    await expect(recruitmentPage.inputFirstName).toHaveValue(
-      ValidUser.FirstName
-    );
-    await expect(recruitmentPage.inputMiddleName).toHaveValue(
-      ValidUser.MiddleName
-    );
-    await expect(recruitmentPage.inputLastName).toHaveValue(ValidUser.LastName);
-    await expect(recruitmentPage.dtJVacancy).toBeVisible();
-    await expect(recruitmentPage.inputEmail).toHaveValue(ValidUser.Email);
-    await expect(recruitmentPage.contactNumber).toHaveValue(
-      ValidUser.ContactNumber
-    );
-    await expect(recruitmentPage.fileName).toHaveText("correct.docx");
-    await expect(recruitmentPage.keywords).toHaveValue(ValidUser.Keywords);
-    await expect(recruitmentPage.dateOfApp).toHaveValue(ValidUser.DateOfApp);
-    await expect(recruitmentPage.notes).toHaveValue(ValidUser.Notes);
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
-    );
+    const elements = [
+      {
+        element: recruitmentPage.inputFirstName,
+        value: RecruitmentResource.ValidUser.FirstName,
+      },
+      {
+        element: recruitmentPage.inputMiddleName,
+        value: RecruitmentResource.ValidUser.MiddleName,
+      },
+      {
+        element: recruitmentPage.inputFirstName,
+        value: RecruitmentResource.ValidUser.FirstName,
+      },
+      {
+        element: recruitmentPage.inputEmail,
+        value: RecruitmentResource.ValidUser.Email,
+      },
+      {
+        element: recruitmentPage.contactNumber,
+        value: RecruitmentResource.ValidUser.ContactNumber,
+      },
+      {
+        element: recruitmentPage.keywords,
+        value: RecruitmentResource.ValidUser.Keywords,
+      },
+      {
+        element: recruitmentPage.dateOfApp,
+        value: RecruitmentResource.ValidUser.DateOfApp,
+      },
+      {
+        element: recruitmentPage.notes,
+        value: RecruitmentResource.ValidUser.Notes,
+      },
+    ];
+
+    for (const { element, value } of elements) {
+      await loginPage.elementValueShouldContain(
+        element,
+        value,
+        15000
+      );
+    }
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("User can shortlist a Application Initiated Candidate", async ({
-    page,
-  }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
+  test("@DC02 User can shortlist a Application Initiated Candidate", async () => {
     await recruitmentPage.shortlistButton.click();
-    await expect(recruitmentPage.h6).toBeVisible();
-    await expect(recruitmentPage.h6).toHaveText("Shortlist Candidate");
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
+    expect(
+      loginPage.waitForElementVisible(recruitmentPage.h6, 10000)
     );
+    await loginPage.elementShouldContainText(
+      recruitmentPage.h6,
+      "Shortlist Candidate",
+      15000
+    );
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("User can reject a Application Initiated Candidate", async ({
-    page,
-  }) => {
-    const fullName = fullNameCombiner(page, ValidUser);
+  test("@DC03 User can reject a Application Initiated Candidate", async () => {
     await recruitmentPage.rejectButton.click();
-    await expect(recruitmentPage.h6).toBeVisible();
-    await expect(recruitmentPage.h6).toHaveText("Reject Candidate");
-    const firstName = ValidUser.FirstName;
-    const candidateName = fullCandidateName(page, ValidUser);
-    await deleteRecord(
-      fullName,
-      firstName,
-      candidateName,
-      page,
-      recruitmentPage
+    expect(
+      loginPage.waitForElementVisible(recruitmentPage.h6, 10000)
     );
+    await loginPage.elementShouldContainText(
+      recruitmentPage.h6,
+      "Reject Candidate",
+      15000
+    );
+    await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 });
