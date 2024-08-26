@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test";
 import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
-
-let loginPage: RecruitmentResource.LoginPage;
+import { LoginPage } from "../../../../pom/loginPage";
+let loginPage: LoginPage;
 let recruitmentPage: RecruitmentResource.RecruitmentPage;
-
 test.beforeEach(async ({ page }) => {
-  loginPage = new RecruitmentResource.LoginPage(page);
+  loginPage = new LoginPage(page);
   recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
   await loginPage.login(
@@ -17,28 +16,28 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe("@SC Candidate Searching Suite", () => {
-  test("@SC1 Filter candidates by Job Title", async () => {
+  test("@SC01 Filter candidates by Job Title", async () => {
     await recruitmentPage.jobTitle.click();
     await recruitmentPage.jobTitleName.click();
     await recruitmentPage.submitButton.click();
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
     );
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("@SC2 Filter candidates by Vacancy", async () => {
+  test("@SC02 Filter candidates by Vacancy", async () => {
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
     );
     await recruitmentPage.vacancy.click();
     await recruitmentPage.vacancyName.click();
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@SC3 Filter candidates by Hiring Manager", async ({ page }) => {
+  test("@SC03 Filter candidates by Hiring Manager", async ({ page }) => {
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
     );
@@ -47,21 +46,21 @@ test.describe("@SC Candidate Searching Suite", () => {
     await recruitmentPage.hiring.click();
     await page.locator(hiringName).click();
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@SC4 Filter candidates by Status", async () => {
+  test("@SC04 Filter candidates by Status", async () => {
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
     );
     await recruitmentPage.status.click();
     await recruitmentPage.statusName.click();
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("@SC5 Filter candidates by Candidate Name", async () => {
+  test("@SC05 Filter candidates by Candidate Name", async () => {
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
     );
@@ -73,11 +72,11 @@ test.describe("@SC Candidate Searching Suite", () => {
     await recruitmentPage.candidateField.fill(firstName); //fill first name
     await candidateName.click();
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@SC6 Filter candidates by Keywords", async () => {
+  test("@SC06 Filter candidates by Keywords", async () => {
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
     );
@@ -85,13 +84,13 @@ test.describe("@SC Candidate Searching Suite", () => {
     const keyWords = RecruitmentResource.ValidUser.Keywords;
     await recruitmentPage.keywords.fill(keyWords);
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@SC7 Filter candidates by From Date", async () => {
+  test("@SC07 Filter candidates by From Date", async () => {
     const now = RecruitmentResource.faker.date.recent();
-    const from = RecruitmentResource.subtractDays(now, 5);
+    const from = loginPage.subtractDays(now, 5);
     const FromDate = RecruitmentResource.format(from, "yyyy-MM-dd");
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
@@ -99,13 +98,13 @@ test.describe("@SC Candidate Searching Suite", () => {
     await recruitmentPage.from.click();
     await recruitmentPage.from.fill(FromDate);
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@SC8 Filter candidates by To Date", async () => {
+  test("@SC08 Filter candidates by To Date", async () => {
     const now = RecruitmentResource.faker.date.recent();
-    const to = RecruitmentResource.addDays(now, 5);
+    const to = loginPage.addDays(now, 5);
     const ToDate = RecruitmentResource.format(to, "yyyy-MM-dd");
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
@@ -114,25 +113,25 @@ test.describe("@SC Candidate Searching Suite", () => {
     await recruitmentPage.to.fill(ToDate);
     await recruitmentPage.to.click();
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@SC9 Filter candidates by Method of Application", async () => {
+  test("@SC09 Filter candidates by Method of Application", async () => {
     const fullName = recruitmentPage.fullNameCombiner(
       RecruitmentResource.ValidUser
     );
     await recruitmentPage.method.click();
     await recruitmentPage.methodName.click();
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
   test("@SC10 Filter candidates by fill all the fields", async ({ page }) => {
     const now = RecruitmentResource.faker.date.recent();
-    const from = RecruitmentResource.subtractDays(now, 5);
-    const to = RecruitmentResource.addDays(now, 5);
+    const from = loginPage.subtractDays(now, 5);
+    const to = loginPage.addDays(now, 5);
     const FromDate = RecruitmentResource.format(from, "yyyy-MM-dd");
     const ToDate = RecruitmentResource.format(to, "yyyy-MM-dd");
     const fullName = recruitmentPage.fullNameCombiner(
@@ -161,14 +160,14 @@ test.describe("@SC Candidate Searching Suite", () => {
     await recruitmentPage.method.click();
     await recruitmentPage.methodName.click();
     await recruitmentPage.submitButton.click();
-    await RecruitmentResource.waitForElementVisible(fullName, 10000);
+    await loginPage.waitForElementVisible(fullName, 10000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
   test("@SC11 Reset options to default when clicking reset button", async () => {
     const now = RecruitmentResource.faker.date.recent();
-    const from = RecruitmentResource.subtractDays(now, 5);
-    const to = RecruitmentResource.addDays(now, 5);
+    const from = loginPage.subtractDays(now, 5);
+    const to = loginPage.addDays(now, 5);
     const FromDate = RecruitmentResource.format(from, "yyyy-MM-dd");
     const ToDate = RecruitmentResource.format(to, "yyyy-MM-dd");
     const firstName = RecruitmentResource.ValidUser.FirstName;
@@ -190,36 +189,36 @@ test.describe("@SC Candidate Searching Suite", () => {
     await recruitmentPage.method.click();
     await recruitmentPage.methodName.click();
     await recruitmentPage.resetButton.click();
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.jobTitle,
       "-- Select --",
       15000
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.vacancy,
       "-- Select --",
       15000
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.status,
       "-- Select --",
       15000
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.method,
       "-- Select --",
       15000
     );
-    await RecruitmentResource.elementShouldEmpty(
+    await loginPage.elementShouldEmpty(
       recruitmentPage.candidateField,
       15000
     );
-    await RecruitmentResource.elementShouldEmpty(
+    await loginPage.elementShouldEmpty(
       recruitmentPage.keywords,
       15000
     );
-    await RecruitmentResource.elementShouldEmpty(recruitmentPage.from, 15000);
-    await RecruitmentResource.elementShouldEmpty(recruitmentPage.to, 15000);
+    await loginPage.elementShouldEmpty(recruitmentPage.from, 15000);
+    await loginPage.elementShouldEmpty(recruitmentPage.to, 15000);
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
@@ -254,7 +253,7 @@ test.describe("@SC Candidate Searching Suite", () => {
       recruitmentPage.to,
     ];
     for (const element of elements) {
-      await RecruitmentResource.waitForElementVisible(element, 10000);
+      await loginPage.waitForElementVisible(element, 10000);
     }
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });

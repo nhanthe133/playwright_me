@@ -1,9 +1,11 @@
 import { test, expect } from "@playwright/test";
 import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
-let loginPage: RecruitmentResource.LoginPage;
+import { LoginPage } from "../../../../pom/loginPage";
+let loginPage: LoginPage;
+
 let recruitmentPage: RecruitmentResource.RecruitmentPage;
 test.beforeEach(async ({ page }) => {
-  loginPage = new RecruitmentResource.LoginPage(page);
+  loginPage = new LoginPage(page);
   recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
   await loginPage.login(
@@ -20,7 +22,7 @@ test.beforeEach(async ({ page }) => {
   await recruitmentPage.switch.click();
 });
 test.describe("@EC Edit Candidate Suite", () => {
-  test("@EC1 Edit Candidate Profile success when editing all the field", async ({
+  test("@EC01 Edit Candidate Profile success when editing all the field", async ({
     page,
   }) => {
     const editUser = RecruitmentResource.createValidUser();
@@ -37,23 +39,23 @@ test.describe("@EC Edit Candidate Suite", () => {
     await recruitmentPage.fillTheFields(fully);
     await recruitmentPage.submitAdd.click();
     await recruitmentPage.confirmButton.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.successMessage,
       10000
     );
     //expect hell:
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.dtJVacancy,
       "Senior QA Lead",
       15000
     );
     expect(
-      RecruitmentResource.waitForElementVisible(
+      loginPage.waitForElementVisible(
         recruitmentPage.dtJVacancy,
         5000
       )
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.fileName,
       "resume.pdf",
       20000
@@ -69,7 +71,7 @@ test.describe("@EC Edit Candidate Suite", () => {
       { element: recruitmentPage.notes, value: editUser.Notes },
     ];
     for (const field of fields) {
-      await RecruitmentResource.elementValueShouldContain(
+      await loginPage.elementValueShouldContain(
         field.element,
         field.value,
         15000
@@ -78,7 +80,7 @@ test.describe("@EC Edit Candidate Suite", () => {
     await recruitmentPage.deleteRecord(editUser);
   });
 
-  test("@EC2 Edit Candidate Profile success when empty all the field but edit Required field", async () => {
+  test("@EC02 Edit Candidate Profile success when empty all the field but edit Required field", async () => {
     const ValidRequireUser = RecruitmentResource.createRequiredValidUser();
     await recruitmentPage.deleteFile.click();
     await recruitmentPage.dtJVacancy.click();
@@ -90,7 +92,7 @@ test.describe("@EC Edit Candidate Suite", () => {
     await recruitmentPage.fillTheFields(requiredFields);
     await recruitmentPage.submitAdd.click();
     await recruitmentPage.confirmButton.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.successMessage,
       10000
     );
@@ -106,7 +108,7 @@ test.describe("@EC Edit Candidate Suite", () => {
       { element: recruitmentPage.inputEmail, value: ValidRequireUser.Email },
     ];
     for (const field of fields) {
-      await RecruitmentResource.elementValueShouldContain(
+      await loginPage.elementValueShouldContain(
         field.element,
         field.value,
         15000
@@ -114,40 +116,40 @@ test.describe("@EC Edit Candidate Suite", () => {
     }
     await recruitmentPage.deleteRecord(ValidRequireUser);
   });
-  test("@EC3 Required Error should be shown when empty required fields", async () => {
+  test("@EC03 Required Error should be shown when empty required fields", async () => {
     await recruitmentPage.deleteFile.click();
     await recruitmentPage.dtJVacancy.click();
     await recruitmentPage.emptyVacancy.click();
     await recruitmentPage.clearCandidateInfo();
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorFirstName,
       10000
     );
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorLastName,
       10000
     );
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorEmail,
       10000
     );
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@EC4 Validation alert should be show when input invalid email address", async () => {
+  test("@EC04 Validation alert should be show when input invalid email address", async () => {
     await recruitmentPage.inputEmail.clear();
     const email = RecruitmentResource.faker.random.word() + "@!@#$.com";
     await recruitmentPage.inputEmail.fill(email);
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorEmail,
       10000
     );
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@EC5 User can upload resume if it not existed yet", async ({
+  test("@EC05 User can upload resume if it not existed yet", async ({
     page,
   }) => {
     await recruitmentPage.deleteFile.click();
@@ -160,24 +162,24 @@ test.describe("@EC Edit Candidate Suite", () => {
     ]);
     await fileChooser.setFiles("files/resume.pdf");
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.successMessage,
       10000
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.fileName,
       "resume.pdf"
     );
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("@EC6 User can download resume", async ({ page }) => {
+  test("@EC06 User can download resume", async ({ page }) => {
     const downloadPromise = page.waitForEvent("download");
     await recruitmentPage.download.click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toBe("correct.docx");
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("@EC7 User can replace resume", async ({ page }) => {
+  test("@EC07 User can replace resume", async ({ page }) => {
     await recruitmentPage.replaceFile.click();
     const [fileChooser] = await Promise.all([
       page.waitForEvent("filechooser"),
@@ -185,14 +187,14 @@ test.describe("@EC Edit Candidate Suite", () => {
     ]);
     await fileChooser.setFiles("files/resume.pdf");
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.fileName,
       "resume.pdf",
       15000
     );
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("@EC8 File size validation alert should be shown when upload file with size larger than 1MB", async ({
+  test("@EC08 File size validation alert should be shown when upload file with size larger than 1MB", async ({
     page,
   }) => {
     const [fileChooser] = await Promise.all([
@@ -200,14 +202,14 @@ test.describe("@EC Edit Candidate Suite", () => {
       recruitmentPage.browseFile.click(),
     ]);
     await fileChooser.setFiles("files/oversize.mp4");
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorFile,
       10000
     );
     await expect(page.getByText("Attachment Size Exceeded")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("@EC9 File type not allowed validation alert should be shown when uploading invalid file type", async ({
+  test("@EC09 File type not allowed validation alert should be shown when uploading invalid file type", async ({
     page,
   }) => {
     const [fileChooser] = await Promise.all([
@@ -215,7 +217,7 @@ test.describe("@EC Edit Candidate Suite", () => {
       recruitmentPage.browseFile.click(),
     ]);
     await fileChooser.setFiles("files/invalidtype.jpg");
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorFile,
       10000
     );
@@ -228,7 +230,7 @@ test.describe("@EC Edit Candidate Suite", () => {
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.dateOfApp.fill(invalidDate);
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorDate,
       10000
     );

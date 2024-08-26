@@ -100,24 +100,6 @@ export class RecruitmentPage {
     return `//div/child::span[text()="${hireName}"]`
   }
 
-  // async deleteRecord(
-  //   ValidUser
-  // ) {
-  //   const middleName = ValidUser.MiddleName ? `${ValidUser.MiddleName} ` : " ";
-  //   const subname = `${ValidUser.FirstName} ${middleName}${ValidUser.LastName}`;
-  //   const candidateName = this.page.locator(this.getFullCandidateName(subname));
-  //   const fullName = this.page.locator(this.getFullNameRowLocator(subname));
-  //   await this.recruitmentLink.click();
-  //   await this.candidateField.click();
-  //   await this.candidateField.fill(ValidUser.FirstName); //fill first name
-  //   await candidateName.click(); // chọn gợi ý
-  //   await this.submitButton.click();
-  //   const rowName = fullName.locator(this.trashButton); // nấu locator cho rowname thùng rác
-  //   await rowName.click(); // nhấp vào thùng rác
-  //   await this.deleteButton.click();
-  //   await expect(this.successMessage).toBeVisible();
-  // }
-
   async clickCheckboxes(users) {
     for (const user of users) {
         const fullName = this.fullNameCombiner(user);

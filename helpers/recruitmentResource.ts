@@ -7,17 +7,6 @@ import {
 import account from "../data/account.json";
 import { faker } from "@faker-js/faker";
 import ValidUser from "../data/fakeData";
-
-import { 
-  waitForElementVisible, 
-  elementShouldContainText, 
-  elementValueShouldContain, 
-  elementAttributeShouldContain,
-  elementShouldEmpty,
-  addDays,
-  subtractDays
-} from "./utils";
-
 import { format } from 'date-fns'
 import {
   createValidUser,
@@ -31,14 +20,7 @@ export {
   createValidUser,
   faker, 
   format, 
-  waitForElementVisible, 
   createRequiredValidUser,
-  elementShouldContainText,
-  elementValueShouldContain,
-  elementAttributeShouldContain,
   User,
-  UserRequire,
-  elementShouldEmpty,
-  addDays,
-  subtractDays
+  UserRequire
 };

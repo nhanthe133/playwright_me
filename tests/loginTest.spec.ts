@@ -22,8 +22,12 @@ test.describe("Login success", () => {
     await expect(page.url()).toBe(
       "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index"
     );
-    await expect(loginPage.dashboardLink).toHaveText("Dashboard");
-    await expect(loginPage.dashboardLink).toBeVisible();
+    await loginPage.waitForElementVisible(loginPage.dashboardLink, 10000);
+    await loginPage.elementShouldContainText(
+      loginPage.dashboardLink,
+      "Dashboard",
+      15000
+    );
   });
 
   test("login success when inputing valid username and password and press enter key on password input", async ({
@@ -38,8 +42,13 @@ test.describe("Login success", () => {
     await expect(page.url()).toBe(
       "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index"
     );
-    await expect(loginPage.dashboardLink).toHaveText("Dashboard");
-    await expect(loginPage.dashboardLink).toBeVisible();
+    await loginPage.elementShouldContainText(
+      loginPage.dashboardLink,
+      "Dashboard",
+      15000
+    );
+    await loginPage.waitForElementVisible(loginPage.dashboardLink, 10000);
+
   });
 
   test("login success when inputing valid username and password by pressing enter key on username input", async ({
@@ -54,26 +63,34 @@ test.describe("Login success", () => {
     expect(page.url()).toBe(
       "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index"
     );
-    await expect(loginPage.dashboardLink).toHaveText("Dashboard");
-    await expect(loginPage.dashboardLink).toBeVisible();
+
+    await loginPage.elementShouldContainText(
+      loginPage.dashboardLink,
+      "Dashboard",
+      15000
+    );
+    await loginPage.waitForElementVisible(loginPage.dashboardLink, 10000);
+
   });
 });
 
 test.describe("Login failed", () => {
-  test("login failed when leaving username and password input are empty", async () => {
+  test("@LF01 login failed when leaving username and password input are empty", async () => {
     await loginPage.submitButton.click();
-    await expect(loginPage.errorUsername).toBeVisible();
-    await expect(loginPage.errorPassword).toBeVisible();
+    await loginPage.waitForElementVisible(loginPage.errorUsername, 10000);
+    await loginPage.waitForElementVisible(loginPage.errorPassword, 10000);
+
   });
 
   test("login failed when inputing only user name", async () => {
     await loginPage.login(account.adminAccount.username);
-    await expect(loginPage.errorPassword).toBeVisible();
+    await loginPage.waitForElementVisible(loginPage.errorPassword, 10000);
   });
 
   test("login failed when inputing only password", async () => {
     await loginPage.login(undefined, account.adminAccount.password);
-    await expect(loginPage.errorUsername).toBeVisible();
+    
+    await loginPage.waitForElementVisible(loginPage.errorUsername, 10000);
   });
 
   test("login failed when inputing incorrect username and password", async () => {
@@ -81,10 +98,15 @@ test.describe("Login failed", () => {
       account.invalidAccount.username,
       account.invalidAccount.password
     );
-    await expect(loginPage.alertLocator).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(loginPage.alertLocator).toHaveText("Invalid credentials");
+    await loginPage.waitForElementVisible(loginPage.alertLocator, 10000);
+
+    
+    // await expect(loginPage.alertLocator).toHaveText("Invalid credentials");
+    await loginPage.elementShouldContainText(
+      loginPage.alertLocator,
+      "Invalid credentials",
+      15000
+    );
   });
 
   test("login failed when inputing invalid password", async () => {
@@ -92,10 +114,13 @@ test.describe("Login failed", () => {
       account.adminAccount.username,
       account.invalidAccount.password
     );
-    await expect(loginPage.alertLocator).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(loginPage.alertLocator).toHaveText("Invalid credentials");
+    await loginPage.waitForElementVisible(loginPage.alertLocator, 10000);
+
+    await loginPage.elementShouldContainText(
+      loginPage.alertLocator,
+      "Invalid credentials",
+      15000
+    );
   });
 
   test("login failed when inputing invalid username", async () => {
@@ -103,9 +128,12 @@ test.describe("Login failed", () => {
       account.invalidAccount.username,
       account.adminAccount.password
     );
-    await expect(loginPage.alertLocator).toBeVisible({
-      timeout: 10000,
-    });
-    await expect(loginPage.alertLocator).toHaveText("Invalid credentials");
+    await loginPage.waitForElementVisible(loginPage.alertLocator, 10000);
+   
+    await loginPage.elementShouldContainText(
+      loginPage.alertLocator,
+      "Invalid credentials",
+      15000
+    );
   });
 });

@@ -1,11 +1,14 @@
 import { test, expect } from "@playwright/test";
 import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
-let loginPage: RecruitmentResource.LoginPage;
+import { LoginPage } from "../../../../pom/loginPage";
+let loginPage: LoginPage;
+
 let recruitmentPage: RecruitmentResource.RecruitmentPage;
 test.beforeEach(async ({ page }) => {
-  loginPage = new RecruitmentResource.LoginPage(page);
   recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
+  loginPage = new LoginPage(page);
+
   await loginPage.login(
     RecruitmentResource.account.adminAccount.username,
     RecruitmentResource.account.adminAccount.password
@@ -21,7 +24,7 @@ test.describe("Row option suite", () => {
     );
     const rowName = fullName.locator(recruitmentPage.eye);
     await rowName.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.appStage,
       10000
     );
@@ -49,24 +52,24 @@ test.describe("@DC Detail Candidate Suite", () => {
     const rowName = fullName.locator(recruitmentPage.eye);
     await rowName.click();
   });
-  test("@DC1 Application Stage and Candidate Profile should be display corresponding data", async () => {
+  test("@DC01 Application Stage and Candidate Profile should be display corresponding data", async () => {
     const dtFullName = recruitmentPage.detailCandidateName(
       RecruitmentResource.ValidUser
     );
-    expect(RecruitmentResource.waitForElementVisible(dtFullName, 5000));
+    expect(loginPage.waitForElementVisible(dtFullName, 5000));
     expect(
-      RecruitmentResource.waitForElementVisible(
+      loginPage.waitForElementVisible(
         recruitmentPage.dtVacancy,
         10000
       )
     );
     expect(
-      RecruitmentResource.waitForElementVisible(
+      loginPage.waitForElementVisible(
         recruitmentPage.dtJVacancy,
         10000
       )
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.fileName,
       "correct.docx",
       15000
@@ -108,7 +111,7 @@ test.describe("@DC Detail Candidate Suite", () => {
     ];
 
     for (const { element, value } of elements) {
-      await RecruitmentResource.elementValueShouldContain(
+      await loginPage.elementValueShouldContain(
         element,
         value,
         15000
@@ -117,12 +120,12 @@ test.describe("@DC Detail Candidate Suite", () => {
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@DC2 User can shortlist a Application Initiated Candidate", async () => {
+  test("@DC02 User can shortlist a Application Initiated Candidate", async () => {
     await recruitmentPage.shortlistButton.click();
     expect(
-      RecruitmentResource.waitForElementVisible(recruitmentPage.h6, 10000)
+      loginPage.waitForElementVisible(recruitmentPage.h6, 10000)
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.h6,
       "Shortlist Candidate",
       15000
@@ -130,12 +133,12 @@ test.describe("@DC Detail Candidate Suite", () => {
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
 
-  test("@DC3 User can reject a Application Initiated Candidate", async () => {
+  test("@DC03 User can reject a Application Initiated Candidate", async () => {
     await recruitmentPage.rejectButton.click();
     expect(
-      RecruitmentResource.waitForElementVisible(recruitmentPage.h6, 10000)
+      loginPage.waitForElementVisible(recruitmentPage.h6, 10000)
     );
-    await RecruitmentResource.elementShouldContainText(
+    await loginPage.elementShouldContainText(
       recruitmentPage.h6,
       "Reject Candidate",
       15000

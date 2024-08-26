@@ -23,9 +23,6 @@ __RUNOPS__ \
 //my custom
 
 switch (args[2].toLowerCase()) {
-  case "--testcase":
-    TESTCASE = args[3];
-    break;
   case "--options":
     runOpts = args[3];
     break;

@@ -1,9 +1,10 @@
 import { test, expect } from "@playwright/test";
 import * as RecruitmentResource from "../../../../helpers/recruitmentResource";
-let loginPage: RecruitmentResource.LoginPage;
+import { LoginPage } from "../../../../pom/loginPage";
 let recruitmentPage: RecruitmentResource.RecruitmentPage;
+let loginPage: LoginPage;
 test.beforeEach(async ({ page }) => {
-  loginPage = new RecruitmentResource.LoginPage(page);
+  loginPage = new LoginPage(page);
   recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
   await page.goto("./auth/login");
   await loginPage.login(
@@ -16,14 +17,14 @@ test("Showing Recruitment page when clicking on Recruitment button", async ({
   page,
 }) => {
   expect(
-    RecruitmentResource.waitForElementVisible(
+    loginPage.waitForElementVisible(
       recruitmentPage.recruitmentLink,
       10000
     )
   );
   await expect(page).toHaveURL("/web/recruitment/viewCandidates");
   expect(
-    RecruitmentResource.waitForElementVisible(
+    loginPage.waitForElementVisible(
       recruitmentPage.recruitmentHeader,
       10000
     )
@@ -34,8 +35,8 @@ test.describe("@AC Add Candidate Suite", () => {
     recruitmentPage = new RecruitmentResource.RecruitmentPage(page);
     await recruitmentPage.addButton.click();
   });
-  test("@AC1 Add Candidate success when inputting all the fields", async ({
-    page,
+  test("@AC01 Add Candidate success when inputting all the fields", async ({
+    page
   }) => {
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.vacancy.click();
@@ -50,17 +51,17 @@ test.describe("@AC Add Candidate Suite", () => {
     );
     await recruitmentPage.fillTheFields(fully);
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.successMessage,
       10000
     );
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.appStage,
       10000
     );
     await recruitmentPage.deleteRecord(RecruitmentResource.ValidUser);
   });
-  test("@AC2 Add Candidate success when inputing required fields only", async () => {
+  test("@AC02 Add Candidate success when inputing required fields only", async () => {
     const ValidRequireUser = RecruitmentResource.createRequiredValidUser();
     const requiredFields: RecruitmentResource.UserRequire = structuredClone(
       ValidRequireUser
@@ -68,47 +69,47 @@ test.describe("@AC Add Candidate Suite", () => {
     await recruitmentPage.fillTheFields(requiredFields);
     await recruitmentPage.submitAdd.click();
     expect(
-      RecruitmentResource.waitForElementVisible(
+      loginPage.waitForElementVisible(
         recruitmentPage.successMessage,
         10000
       )
     );
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.appStage,
       10000
     );
     await recruitmentPage.deleteRecord(ValidRequireUser);
   });
 
-  test("@AC3 Failed to add candidate when do not input required fields", async () => {
+  test("@AC03 Failed to add candidate when do not input required fields", async () => {
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorFirstName,
       10000
     );
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorLastName,
       10000
     );
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorEmail,
       10000
     );
   });
 
-  test("@AC4 Validation alert should be show when input invalid email address", async ({
+  test("@AC04 Validation alert should be show when input invalid email address", async ({
     page,
   }) => {
     const email = RecruitmentResource.faker.random.word() + "@!@#$.com";
     await recruitmentPage.inputEmail.fill(email);
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorEmail,
       10000
     );
     await expect(page.getByText("admin@example.com")).toBeVisible();
   });
-  test("@AC5 File size validation alert should be shown when upload file with size larger than 1MB", async ({
+  test("@AC05 File size validation alert should be shown when upload file with size larger than 1MB", async ({
     page,
   }) => {
     const [fileChooser] = await Promise.all([
@@ -117,14 +118,14 @@ test.describe("@AC Add Candidate Suite", () => {
     ]);
     await fileChooser.setFiles("files/oversize.mp4");
     expect(
-      RecruitmentResource.waitForElementVisible(
+      loginPage.waitForElementVisible(
         recruitmentPage.errorFile,
         10000
       )
     );
     await expect(page.getByText("Attachment Size Exceeded")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
   });
-  test("@AC6 File type not allowed validation alert should be shown when uploading invalid file type", async ({
+  test("@AC06 File type not allowed validation alert should be shown when uploading invalid file type", async ({
     page,
   }) => {
     const [fileChooser] = await Promise.all([
@@ -133,7 +134,7 @@ test.describe("@AC Add Candidate Suite", () => {
     ]);
     await fileChooser.setFiles("files/invalidtype.jpg");
     expect(
-      RecruitmentResource.waitForElementVisible(
+      loginPage.waitForElementVisible(
         recruitmentPage.errorFile,
         10000
       )
@@ -141,23 +142,23 @@ test.describe("@AC Add Candidate Suite", () => {
     await expect(page.getByText("File type not allowed")).toBeVisible(); // ko có gì khác nhau ở errorFile locator
   });
 
-  test("@AC7 Date format validation message should be shown when input invalid date format", async () => {
+  test("@AC07 Date format validation message should be shown when input invalid date format", async () => {
     const invalidDate = RecruitmentResource.faker.animal.bear();
     await recruitmentPage.dateOfApp.clear();
     await recruitmentPage.dateOfApp.fill(invalidDate);
     await recruitmentPage.submitAdd.click();
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.errorDate,
       10000
     );
   });
 
-  test("@AC8 Navigation to Recruitment page when clicking the cancel button", async ({
+  test("@AC08 Navigation to Recruitment page when clicking the cancel button", async ({
     page,
   }) => {
     await recruitmentPage.cancelButton.click();
     await expect(page).toHaveURL("/web/recruitment/viewCandidates");
-    await RecruitmentResource.waitForElementVisible(
+    await loginPage.waitForElementVisible(
       recruitmentPage.recruitmentHeader,
       10000
     );

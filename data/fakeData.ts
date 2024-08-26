@@ -18,14 +18,8 @@ export type UserRequire = {
 
 export function createValidUser(): User {
   const phoneFormat = "###-###-####";
-  // const dateApp = faker.date.between({
-  //   from: "2024-08-07",
-  //   to: "2024-08-08",
-  // })
   const dateApp = faker.date.recent();
-
   const DateOfApp = format(dateApp, 'yyyy-MM-dd');
-
   return {
     FirstName: faker.person.firstName(),
     MiddleName: faker.person.middleName(),
